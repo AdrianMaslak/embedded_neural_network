@@ -1,0 +1,35 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2026.1 (win64) Build 6511674 Tue Jun 16 11:02:23 MDT 2026
+| Date         : Mon Nov 16 19:34:52 2026
+| Host         : Adrian running 64-bit major release  (build 9200)
+| Command      : report_utilization -hierarchical -hierarchical_depth 2 -file W:/vivado/out/utilization_hier.rpt
+| Design       : system_wrapper
+| Device       : xc7z020clg400-1
+| Speed File   : -1
+| Design State : Routed
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++----------------------+---------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+|       Instance       |           Module          | Total LUTs | Logic LUTs | LUTRAMs | SRLs |  FFs  | RAMB36 | RAMB18 | DSP Blocks |
++----------------------+---------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+| system_wrapper       |                     (top) |      15584 |      14300 |     306 |  978 | 14264 |     26 |    110 |         61 |
+|   system_i           |                    system |      15584 |      14300 |     306 |  978 | 14264 |     26 |    110 |         61 |
+|     snn_mlp_0        |        system_snn_mlp_0_0 |       3638 |       3316 |     286 |   36 |  3348 |      8 |      6 |          8 |
+|     axi_bram_ctrl_0  |  system_axi_bram_ctrl_0_0 |        226 |        218 |       0 |    8 |   241 |      0 |      0 |          0 |
+|     axi_mem_intercon | system_axi_mem_intercon_0 |        281 |        262 |       2 |   17 |   370 |      0 |      0 |          0 |
+|     ps_axi_periph    |    system_ps_axi_periph_0 |       1580 |       1460 |       0 |  120 |  1764 |      0 |      0 |          0 |
+|     shape_cnn_0      |      system_shape_cnn_0_0 |       9843 |       9030 |      18 |  795 |  8503 |     16 |    104 |         53 |
++----------------------+---------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+* Note: The sum of lower-level cells may be larger than their parent cells total, due to cross-hierarchy LUT combining
+
+

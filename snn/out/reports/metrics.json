@@ -1,0 +1,18 @@
+{
+  "T_steps": 1,
+  "encoding": "Sobel ON/OFF, P90 threshold, 5x5 cell density",
+  "val_acc_float": 0.9975,
+  "test_acc_float": 0.9858333333333333,
+  "val_acc_int": 0.9816666666666667,
+  "test_acc_int": 0.9791666666666666,
+  "float_int_agreement_test": 0.9908333333333333,
+  "test_per_class_acc_int": {
+    "Circle": 0.98,
+    "Square": 0.9766666666666667,
+    "Triangle": 0.9766666666666667,
+    "Figure8": 0.9833333333333333
+  },
+  "epochs_run": 14,
+  "params": 35044,
+  "input_nonzero_pct": 22.751953125
+}

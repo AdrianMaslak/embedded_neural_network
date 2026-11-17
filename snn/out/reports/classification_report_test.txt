@@ -1,0 +1,10 @@
+              precision    recall  f1-score   support
+
+      Circle     0.9800    0.9800    0.9800       300
+      Square     1.0000    0.9767    0.9882       300
+    Triangle     0.9734    0.9767    0.9750       300
+     Figure8     0.9641    0.9833    0.9736       300
+
+    accuracy                         0.9792      1200
+   macro avg     0.9794    0.9792    0.9792      1200
+weighted avg     0.9794    0.9792    0.9792      1200

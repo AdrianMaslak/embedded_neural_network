@@ -1,0 +1,196 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=1.7cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,microtype,booktabs,graphicx,amsmath,siunitx,hyperref,caption,subcaption}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,fit,backgrounds}
+\captionsetup{font=small,skip=3pt}
+\setlength{\parskip}{2pt}\setlength{\parindent}{0pt}
+
+% ------------------------------------------------------------------
+% Numbers (TBD = to be measured on the board with pc/app.py eval)
+% ------------------------------------------------------------------
+\newcommand{\TBD}{\textcolor{red}{TBD}}
+\newcommand{\videolink}{\TBD}
+\newcommand{\gitHW}{\TBD}
+\newcommand{\gitSW}{\TBD}
+% software / C-simulation results (test set, 1200 images)
+\newcommand{\cnnKerasAcc}{100.0}
+\newcommand{\snnFloatAcc}{98.58}
+\newcommand{\snnIntAcc}{97.92}
+% HLS synthesis @ 100 MHz
+\newcommand{\cnnLatCyc}{283\,902} \newcommand{\cnnLatUs}{2\,839}
+\newcommand{\snnLatCyc}{19\,812}  \newcommand{\snnLatUs}{198}
+% board measurements (pc/app.py eval, 1200 test images, 16.11.2026)
+\newcommand{\cnnBoardAcc}{100.0} \newcommand{\snnBoardAcc}{97.92}
+\newcommand{\cnnIpUs}{2\,840}    \newcommand{\snnIpUs}{197}
+\newcommand{\cnnPreUs}{289}      \newcommand{\snnPreUs}{1\,827}
+\newcommand{\uartMs}{12.0}       \newcommand{\rttMs}{30.7}
+
+\title{\vspace{-1.2cm}Assignment 2: Accelerated AI for Vision -- CNN vs.\ SNN Shape Recognition on the PYNQ-Z2}
+\author{Group \TBD}
+\date{\vspace{-0.6cm}}
+
+\begin{document}
+\maketitle
+\vspace{-0.4cm}
+\noindent\textbf{Video:} \videolink\quad
+\textbf{Hardware/platform repo:} \gitHW\quad
+\textbf{Application repo:} \gitSW
+
+% ==================================================================
+\section{Vision task and dataset}
+Each $60\times80$ grayscale image contains one shape: \emph{circle, square, triangle} or
+\emph{figure-of-eight}. A generator (\texttt{gen\_shapes.py}) draws the shapes
+anti-aliased at $4\times$ resolution with random size (16--54\,px), position, rotation
+(0--360$^\circ$), line thickness (1--4\,px), 25\,\% filled shapes, background level and
+lighting gradient, contrast, blur and Gaussian noise. Figure-eights are either two
+stacked loops or a lemniscate. Train/validation/test = 1500/300/300 images per class,
+each split and class drawn from an independent seeded random stream, so the splits are
+disjoint and reproducible; both networks use exactly the same splits and test images.
+
+% ==================================================================
+\section{Network designs}
+\textbf{CNN (ShapeCNN, 8.6\,k parameters).} Four Conv$3\times3$+BN+ReLU blocks with
+8/16/16/32 channels, $2\times2$ max-pooling after the first three
+($60{\times}80\to30{\times}40\to15{\times}20\to7{\times}10$), global average pooling and a
+dense $32\to4$ layer; trained in Keras (Adam, early stopping), BN folded into the
+convolutions for export. The lecture's depthwise-separable CNN only reached
+$\approx$32\,\% here: its receptive field ($\approx8$\,px) sees line segments, not shapes;
+ShapeCNN's is $\approx38$\,px. The HLS kernel uses Q8.8 activations
+(\texttt{ap\_fixed<16,8>}, rounding + saturation), 18-bit weights and 32-bit accumulators.
+Each block is one flattened loop pipelined at II\,=\,1 that computes one $3\times3$ tap per
+cycle for all input channels in parallel (block 1: all 8 output channels), with the
+max-pool fused into the loop.
+
+\textbf{SNN (512--64--32--4 LIF).} Leaky integrate-and-fire neurons (snnTorch,
+$\beta=0.9$, threshold 1, subtractive reset, fast-sigmoid surrogate gradient), readout =
+output membrane potential, $T=1$ time step. \emph{Input encoding:} integer Sobel
+$|G_x|+|G_y|$; a pixel emits a spike if $|G|>\max|G|/3$ (contrast-adaptive, rejects noise),
+into channel 0 if $|G_x|\ge|G_y|$ else channel 1. Spikes are binned on a $16\times16$ grid
+laid over the bounding square of all spikes (translation/scale normalisation) and the
+counts clipped at 4 give $16\cdot16\cdot2=512$ features $\in\{0,32,\dots,128\}$. The lecture
+encoding (ON/OFF of $G_x+G_y$ at the 90th percentile, fixed grid) gave 31\,\% on this
+data: noise filled the percentile and $G_x+G_y$ vanishes on $45^\circ$ edges.
+Weights are quantised to int16 ($\times128$); the HLS kernel (lecture 8) uses integer
+LIF arithmetic ($\beta\approx115/128$), skips zero inputs and accumulates spikes as additions.
+
+\textbf{Verification.} For the SNN, a Python integer model reproduces the kernel exactly;
+C-simulation of all 1200 test images matched it bit-for-bit (prediction and all four
+membrane scores). The CNN C-simulation against the Keras model ran for 400 of the 1200
+images before the PC ran out of memory; the CNN was then verified on the board instead, where
+all 1200 predictions are correct (same as Keras). The firmware's C preprocessing was compiled
+on the PC and matched the Python features on all 1200 test images. On the board, both
+networks reproduce their PC reference accuracy exactly (Table~\ref{tab:res}).
+
+% ==================================================================
+\section{Hardware--software architecture, memory and UART protocol}
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[font=\scriptsize,
+  blk/.style={draw, rounded corners=2pt, align=center, minimum height=9mm, inner sep=3pt, fill=white},
+  arr/.style={-{Latex[length=2mm]}, thick},
+  ctl/.style={-{Latex[length=2mm]}, dashed},
+  reg/.style={draw, dotted, rounded corners=3pt, inner sep=2.5mm}]
+\node[blk, minimum width=20mm] (pc) at (0,0.4) {PC app\\load images,\\show + compare};
+\node[blk, minimum width=36mm] (cpu) at (4.3,0.4) {ARM Cortex-A9, bare-metal C\\UART + CRC, preprocessing,\\IP control, timing};
+\node[blk, minimum width=36mm, fill=violet!8] (ddr) at (4.3,-1.9) {DDR image buffer\\$60{\times}80$ Q8.8 (9.6\,KB)};
+\node[blk, minimum width=19mm, minimum height=31mm] (ic) at (8.7,0.3) {AXI\\Interconnect\\[2pt]S00: CPU\\S01: SNN};
+\node[blk, minimum width=30mm, fill=violet!8] (bram) at (13.0,1.45) {AXI BRAM 8\,KB, 512 features\\\texttt{0x4002\_0000}};
+\node[blk, minimum width=30mm, fill=orange!12] (snn) at (13.0,0.0) {SNN IP \texttt{snn\_mlp}\\512--64--32--4 LIF, 197\,\textmu s};
+\node[blk, minimum width=30mm, fill=blue!8] (cnn) at (13.0,-1.9) {CNN IP \texttt{shape\_cnn}\\4 conv blocks, 2.84\,ms};
+\draw[arr] ([yshift=2mm]pc.east) -- node[above]{4807\,B} ([yshift=2mm]cpu.west);
+\draw[arr] ([yshift=-2mm]cpu.west) -- node[below]{64\,B} ([yshift=-2mm]pc.east);
+\node[below=1mm of pc] {UART 4\,Mbd, 8N1};
+\draw[arr] (cpu) -- node[right]{write + flush cache} (ddr);
+\draw[arr] (cpu) -- node[above]{GP0} (cpu.east -| ic.west);
+\draw[arr] (ic.east |- bram) -- (bram.west);
+\draw[ctl] ([yshift=1.5mm]ic.east |- snn.west) -- node[above]{ctrl} ([yshift=1.5mm]snn.west);
+\draw[arr] ([yshift=-1.5mm]snn.west) -- node[below]{m\_axi} ([yshift=-1.5mm]ic.east |- snn.west);
+\draw[ctl] (ic.south) |- node[pos=0.75, above]{ctrl} (cnn.west);
+\draw[arr] (cnn.south) -- ++(0,-0.45) -| node[pos=0.25, below]{m\_axi $\to$ \texttt{S\_AXI\_HP0} (reads DDR)} (ddr.south);
+\begin{scope}[on background layer]
+\node[reg, fit=(cpu)(ddr), label={[font=\scriptsize]above:PS, 650\,MHz}] {};
+\node[reg, fit=(ic)(bram)(snn)(cnn), label={[font=\scriptsize]above:PL, 100\,MHz}] {};
+\end{scope}
+\end{tikzpicture}
+\caption{System overview: both accelerators in one bitstream, selected per request by the CPU.
+CNN reads its input from DDR via \texttt{HP0}; SNN reads its features from an AXI BRAM through the
+CPU's interconnect (dashed: AXI-Lite control).}
+\end{figure}
+
+\textbf{Division of work.} The PC only sends raw 8-bit images and displays/evaluates the
+answers. The CPU receives and checks frames, converts pixels to Q8.8 (CNN) or computes the
+512 spike features (SNN), starts the IP through AXI-Lite, polls \texttt{ap\_done}, reads the
+prediction and logits, and returns them with timing (global timer, 325\,MHz).
+
+\textbf{Memory arrangement.} CNN: the CPU writes the $60\times80$ Q8.8 image (9.6\,KB) to a
+DDR buffer, flushes the D-cache and passes the address; the IP fetches it as AXI master
+through \texttt{S\_AXI\_HP0} into on-chip BRAM. SNN: the CPU writes the features into an
+8\,KB AXI BRAM (\texttt{0x4002\_0000}) through \texttt{M\_AXI\_GP0}; the IP reads them with
+its \texttt{m\_axi} port, which enters the same AXI interconnect as a second slave input
+(\texttt{S01}), so CPU and SNN see the BRAM at the same address. The BRAM controller has only
+one slave port; Vivado's connection automation had left the SNN master on an unconnected
+interconnect, so the SNN hung until this was wired by hand. Results are returned in AXI-Lite
+registers.
+
+\textbf{UART protocol.} PS UART0 (USB), 8N1, no flow control, 4\,000\,000\,Bd. Request
+\texttt{AA 55 | cmd | len(u16) | payload | CRC-16}; response
+\texttt{55 AA | cmd | status | len | payload | CRC-16} (CCITT, init \texttt{0xFFFF}, little
+endian). Commands: CNN, SNN, BOTH (payload = 4800-byte image), ECHO (link test without
+the accelerators), INFO. An inference reply carries the board receive time and per network
+\{class, preprocessing time, IP time, 4 logits\} (26\,B). The ECHO command was used to test
+image transfer before integrating the IPs.
+
+% ==================================================================
+\section{Results}
+\begin{table}[h]
+\centering\small
+\begin{tabular}{lcc}
+\toprule
+ & CNN & SNN \\
+\midrule
+Test accuracy: software (float) & \cnnKerasAcc\,\% & \snnFloatAcc\,\% \\
+Test accuracy: integer / fixed-point reference & -- & \snnIntAcc\,\% \\
+Test accuracy: on board & \cnnBoardAcc\,\% & \snnBoardAcc\,\% \\
+\quad per class (circle / square / triangle / fig-8) & 100 / 100 / 100 / 100 & 98.0 / 97.7 / 97.7 / 98.3 \\
+HLS latency @100\,MHz & \cnnLatCyc\ cyc (\cnnLatUs\,\textmu s) & \snnLatCyc\ cyc (\snnLatUs\,\textmu s) \\
+Measured IP time (start$\to$done) & \cnnIpUs\,\textmu s & \snnIpUs\,\textmu s \\
+CPU preprocessing & \cnnPreUs\,\textmu s & \snnPreUs\,\textmu s \\
+Throughput, IP only & 352 img/s & 5\,076 img/s \\
+Throughput, IP + preprocessing & 320 img/s & 494 img/s \\
+LUT / FF & 9\,843 / 8\,503 & 3\,638 / 3\,348 \\
+BRAM36 eq.\ / DSP & 68 / 53 & 11 / 8 \\
+Power (Vivado, post-route, IP) & 0.266\,W & 0.056\,W \\
+Energy per inference (IP) & 755\,\textmu J & 11\,\textmu J \\
+\bottomrule
+\end{tabular}
+\caption{CNN vs.\ SNN on the same 1200 test images (300 per class), one bitstream, 100\,MHz,
+timing met (WNS +0.257\,ns). Whole design: 15\,584 LUT (29\,\%), 81 BRAM tiles (58\,\%),
+61 DSP (28\,\%), 1.76\,W on chip (1.26\,W of it the ARM processing system).}
+\label{tab:res}
+\end{table}
+
+\textbf{Communication overhead.} One image request is 4807 bytes and a BOTH reply 64 bytes
+(\SI{12.2}{ms} of wire time at 4\,Mbd). The board needs \uartMs\,ms to receive an image; the
+measured PC round trip for BOTH is \rttMs\,ms (31 images/s), of which only 5.2\,ms is
+preprocessing and inference. The UART is therefore $4\times$ slower than the CNN
+accelerator and $60\times$ slower than the SNN accelerator; the remaining 13.5\,ms are USB
+latency and PC-side Python. UART transfer time was measured separately with ECHO
+(50 images, 0 errors, 42.8\,ms round trip).
+
+\textbf{Discussion and future work.} The CNN is more accurate (100\,\% vs.\ 97.9\,\%; the SNN's
+25 errors are spread over all classes) but needs $2.7\times$ the LUTs, $6.6\times$ the DSPs and
+$70\times$ the energy per inference, and is $14\times$ slower. The SNN is cheap because binary
+spikes turn the first layer's multiplications into additions and zero inputs are skipped,
+and $T=1$ keeps it to a single pass. Its price is a hand-designed encoder: the spike
+features take 1.8\,ms on the CPU, $9\times$ the SNN inference itself, so end-to-end
+the SNN is only $1.5\times$ faster than the CNN. Moving the encoder into the FPGA would remove
+this. Because the UART dominates, the most effective improvements are on the link: Ethernet
+or the USB-OTG port, sending compressed images, or sending only the 512 features (1\,KB
+instead of 4.8\,KB). Inside the board, DMA streaming with double buffering would overlap
+receiving one image with processing the previous one. Further steps are DFX to swap both
+networks into one reconfigurable region (the bonus task, not done), and $T>1$ rate or
+temporal coding to trade SNN latency for accuracy.
+
+\end{document}

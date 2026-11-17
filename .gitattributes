@@ -1,0 +1,11 @@
+* text=auto
+
+# binary build products and data: never touch line endings
+*.bit    binary
+*.xsa    binary
+*.pdf    binary
+*.png    binary
+*.npy    binary
+*.keras  binary
+*.pt     binary
+*.elf    binary

@@ -1,0 +1,46 @@
+﻿extracting features ...
+train 6000  val 1200  test 1200  input density 22.8% nonzero
+epoch 01 train 0.7453 val 0.9917
+epoch 02 train 0.9935 val 0.9967
+epoch 03 train 0.9962 val 0.9950
+epoch 04 train 0.9973 val 0.9975
+epoch 05 train 0.9973 val 0.9958
+epoch 06 train 0.9973 val 0.9967
+epoch 07 train 0.9977 val 0.9967
+epoch 08 train 0.9980 val 0.9975
+epoch 09 train 0.9985 val 0.9975
+epoch 10 train 0.9987 val 0.9975
+epoch 11 train 0.9988 val 0.9967
+epoch 12 train 0.9988 val 0.9967
+epoch 13 train 0.9988 val 0.9967
+epoch 14 train 0.9990 val 0.9975
+              precision    recall  f1-score   support
+
+      Circle     0.9800    0.9800    0.9800       300
+      Square     1.0000    0.9767    0.9882       300
+    Triangle     0.9734    0.9767    0.9750       300
+     Figure8     0.9641    0.9833    0.9736       300
+
+    accuracy                         0.9792      1200
+   macro avg     0.9794    0.9792    0.9792      1200
+weighted avg     0.9794    0.9792    0.9792      1200
+
+{
+  "T_steps": 1,
+  "encoding": "Sobel ON/OFF, P90 threshold, 5x5 cell density",
+  "val_acc_float": 0.9975,
+  "test_acc_float": 0.9858333333333333,
+  "val_acc_int": 0.9816666666666667,
+  "test_acc_int": 0.9791666666666666,
+  "float_int_agreement_test": 0.9908333333333333,
+  "test_per_class_acc_int": {
+    "Circle": 0.98,
+    "Square": 0.9766666666666667,
+    "Triangle": 0.9766666666666667,
+    "Figure8": 0.9833333333333333
+  },
+  "epochs_run": 14,
+  "params": 35044,
+  "input_nonzero_pct": 22.751953125
+}
+done -> C:\Users\masla\Desktop\SDU\Embeddded systems\assignment2\snn\out

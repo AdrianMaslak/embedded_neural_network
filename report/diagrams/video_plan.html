@@ -1,0 +1,273 @@
+<title>Assignment 2 Video Run Sheet</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: timeline of 9 segments; each row = time rail | screen + talking points. Commands in copyable blocks. */
+:root{
+  --bg:#f5f7f8; --surface:#ffffff; --fg:#17202a; --muted:#5a6672; --line:#c9d1d8;
+  --accent:#1f5fbf; --accent-soft:#e3ecfa; --live:#b4331f; --live-soft:#fbe6e2; --code-bg:#eef2f5;
+  --font-head:"IBM Plex Sans Condensed","Arial Narrow",Arial,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1418; --surface:#171e24; --fg:#e4e9ee; --muted:#97a3ae; --line:#2e3a44;
+  --accent:#6fa3f0; --accent-soft:#16263d; --live:#f08a74; --live-soft:#3a1a14; --code-bg:#11181d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1418; --surface:#171e24; --fg:#e4e9ee; --muted:#97a3ae; --line:#2e3a44;
+  --accent:#6fa3f0; --accent-soft:#16263d; --live:#f08a74; --live-soft:#3a1a14; --code-bg:#11181d; color-scheme:dark}
+
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 56px}
+.wrap{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:36px}
+header{display:flex;flex-direction:column;gap:8px}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--font-head);font-weight:600;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:0;text-wrap:balance}
+h2{font-family:var(--font-head);font-weight:600;font-size:22px;margin:0;text-wrap:balance}
+h3{font-family:var(--font-head);font-weight:600;font-size:18px;margin:0}
+p{margin:0;max-width:70ch}
+.lede{color:var(--muted)}
+section{display:flex;flex-direction:column;gap:14px}
+code{font-family:var(--font-mono);font-size:.88em;background:var(--code-bg);padding:1px 4px;border-radius:3px}
+ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+li{max-width:70ch}
+
+.bar{display:flex;height:30px;border-radius:4px;overflow:hidden;min-width:600px}
+.bar div{display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:11px;color:#fff;white-space:nowrap;overflow:hidden;border-right:1px solid var(--bg)}
+.bar .x{background:var(--accent)} .bar .l{background:var(--live)}
+.barwrap{overflow-x:auto}
+
+.seg{display:grid;grid-template-columns:110px 1fr;gap:20px;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:18px}
+.seg.live{border-color:var(--live)}
+.time{display:flex;flex-direction:column;gap:4px}
+.time b{font-family:var(--font-mono);font-weight:500;font-size:15px;font-variant-numeric:tabular-nums}
+.time span{font-family:var(--font-mono);font-size:12px;color:var(--muted)}
+.tag{align-self:flex-start;font-family:var(--font-mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:3px;background:var(--accent-soft);color:var(--accent)}
+.seg.live .tag{background:var(--live-soft);color:var(--live)}
+.body{display:flex;flex-direction:column;gap:10px;min-width:0}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.label{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.say{border-left:3px solid var(--line);padding-left:12px}
+
+.cmd{position:relative;background:var(--code-bg);border:1px solid var(--line);border-radius:5px;padding:10px 70px 10px 12px;overflow-x:auto}
+.cmd pre{margin:0;font-family:var(--font-mono);font-size:13px;line-height:1.6;white-space:pre}
+.copy{position:absolute;top:8px;right:8px;font-family:var(--font-mono);font-size:12px;padding:4px 9px;border-radius:4px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.copy:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.check{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:8px 24px}
+.check label{display:flex;gap:10px;align-items:flex-start;font-size:14.5px}
+.check input{margin-top:4px;accent-color:var(--accent)}
+@media (max-width:640px){.seg{grid-template-columns:1fr;gap:10px}.time{flex-direction:row;gap:12px;align-items:baseline}.cols{grid-template-columns:1fr}}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Assignment 2 · 15-minute video · due 23 Nov 2026 23:59</div>
+  <h1>Video run sheet</h1>
+  <p class="lede">Nine segments that cover everything the assignment asks the video to show. Blue segments are explanation over diagrams and tool screens; red segments are live on the board. Times are targets; keep the total under 15:00.</p>
+</header>
+
+<section>
+  <div class="barwrap"><div class="bar" role="img" aria-label="Timeline of the nine segments">
+    <div class="x" style="width:5%">1</div>
+    <div class="x" style="width:8.33%">2 data</div>
+    <div class="x" style="width:13.33%">3 CNN</div>
+    <div class="x" style="width:13.33%">4 SNN</div>
+    <div class="x" style="width:13.33%">5 HW/SW</div>
+    <div class="x" style="width:5%">6</div>
+    <div class="l" style="width:20%">7 live demo</div>
+    <div class="x" style="width:11.67%">8 results</div>
+    <div class="x" style="width:10%">9 limits</div>
+  </div></div>
+</section>
+
+<section>
+  <h2>Before you press record</h2>
+  <div class="check">
+    <label><input type="checkbox" id="c1">Close Firefox and other heavy programs.</label>
+    <label><input type="checkbox" id="c2">Board: JTAG boot jumper, USB in, power on. Port shows as COM4.</label>
+    <label><input type="checkbox" id="c3">Terminal: run the setup block below; <code>info</code> answers.</label>
+    <label><input type="checkbox" id="c4">Open the diagrams page in a browser tab.</label>
+    <label><input type="checkbox" id="c5">Open Vivado: <code>vivado\build\a2.xpr</code>, block design visible.</label>
+    <label><input type="checkbox" id="c6">Open Vitis HLS reports for <code>hls\cnn\cnn_prj</code> and <code>hls\snn\snn_prj</code>.</label>
+    <label><input type="checkbox" id="c7">Open the Vitis workspace <code>firmware\ws</code> with <code>main.c</code>.</label>
+    <label><input type="checkbox" id="c8">Open <code>dataset\preview.png</code> and <code>report\report.pdf</code>.</label>
+    <label><input type="checkbox" id="c9">Recorder (e.g. OBS) at 1080p, mic level checked, terminal font enlarged.</label>
+  </div>
+  <div class="cmd"><button class="copy" type="button">Copy</button><pre>subst W: "C:\Users\masla\Desktop\SDU\Embeddded systems\assignment2"
+W:
+C:\AMDDesignTools\2026.1\Vitis\bin\xsdb.bat firmware\run_on_board.tcl
+python pc\app.py --port COM4 info</pre></div>
+  <div class="cmd"><button class="copy" type="button">Copy</button><pre>C:\AMDDesignTools\2026.1\Vivado\bin\vivado.bat W:\vivado\build\a2.xpr
+C:\AMDDesignTools\2026.1\Vitis\bin\vitis.bat -w W:\firmware\ws</pre></div>
+</section>
+
+<section>
+  <h2>Segments</h2>
+
+  <div class="seg">
+    <div class="time"><b>0:00</b><span>0:45</span><i class="tag">explain</i></div>
+    <div class="body">
+      <h3>1 · Introduction</h3>
+      <div class="cols">
+        <div><div class="label">On screen</div><p>Report title, then diagram 1 (system).</p></div>
+        <div class="say"><div class="label">Say</div><ul>
+          <li>Task: classify circle, square, triangle, figure-8 in 60×80 images.</li>
+          <li>Same test set on a CNN and an SNN, both as Vitis HLS IPs in one bitstream on the PYNQ-Z2.</li>
+          <li>Headline: CNN 100 %, SNN 97.9 % on 1200 board images; SNN 14× faster and 70× less energy per inference.</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="seg">
+    <div class="time"><b>0:45</b><span>1:15</span><i class="tag">explain</i></div>
+    <div class="body">
+      <h3>2 · Dataset</h3>
+      <div class="cols">
+        <div><div class="label">On screen</div><p><code>dataset\preview.png</code>, then <code>gen_shapes.py</code> briefly.</p></div>
+        <div class="say"><div class="label">Say</div><ul>
+          <li>Generated: random size, position, rotation, line thickness 1–4 px, filled shapes, noise, blur, lighting gradients.</li>
+          <li>1500 / 300 / 300 images per class for train / val / test, seeded and disjoint.</li>
+          <li>Both networks train and test on exactly the same splits.</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="seg">
+    <div class="time"><b>2:00</b><span>2:00</span><i class="tag">explain</i></div>
+    <div class="body">
+      <h3>3 · CNN design and HLS</h3>
+      <div class="cols">
+        <div><div class="label">On screen</div><p>Diagram 3, then the CNN synthesis report in Vitis HLS (latency 283 902 cycles, resource table).</p></div>
+        <div class="say"><div class="label">Say</div><ul>
+          <li>The lecture CNN got 32 %: its 8 px receptive field sees line pieces, not whole shapes.</li>
+          <li>ShapeCNN: 4 conv blocks, 8.6 k parameters, about 38 px receptive field.</li>
+          <li>HLS: Q8.8 fixed point, each block one loop at II = 1, max-pool fused in, 2.84 ms.</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="seg">
+    <div class="time"><b>4:00</b><span>2:00</span><i class="tag">explain</i></div>
+    <div class="body">
+      <h3>4 · SNN design, encoding and simulation evidence</h3>
+      <div class="cols">
+        <div><div class="label">On screen</div><p>Diagram 4, then the SNN C-simulation log (1200/1200 bit-exact) and its synthesis report.</p></div>
+        <div class="say"><div class="label">Say</div><ul>
+          <li>Encoding: Sobel edges, spike if above a third of the strongest edge, two direction channels, 16×16 grid over the shape's bounding square = 512 inputs.</li>
+          <li>The lecture encoding got 31 %: noise and 45° edges broke it.</li>
+          <li>Network 512–64–32–4 LIF, T = 1 time step, int16 weights; spikes make the multiplications into additions.</li>
+          <li>C-simulation matches the Python integer model bit for bit on all 1200 images.</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="seg">
+    <div class="time"><b>6:00</b><span>2:00</span><i class="tag">explain</i></div>
+    <div class="body">
+      <h3>5 · CPU vs. FPGA split, memory, Vivado</h3>
+      <div class="cols">
+        <div><div class="label">On screen</div><p>Diagram 1, then Vivado: block design and Address Editor. Briefly <code>main.c</code> in Vitis (<code>run_cnn</code>, <code>run_snn</code>).</p></div>
+        <div class="say"><div class="label">Say</div><ul>
+          <li>CPU: UART, CRC, preprocessing, starts the IP and polls <code>ap_done</code>, measures time.</li>
+          <li>FPGA: only the two networks.</li>
+          <li>CNN reads its image from DDR through HP0 (CPU flushes the cache first). SNN reads its features from an 8 KB AXI BRAM.</li>
+          <li>Bring-up bug worth telling: Vivado left the SNN memory port unconnected, so it hung; fixed by joining the CPU interconnect on S01.</li>
+          <li>Timing met at 100 MHz, 29 % LUT, 58 % BRAM.</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="seg">
+    <div class="time"><b>8:00</b><span>0:45</span><i class="tag">explain</i></div>
+    <div class="body">
+      <h3>6 · UART protocol</h3>
+      <div class="cols">
+        <div><div class="label">On screen</div><p>Diagram 5 (frame layout).</p></div>
+        <div class="say"><div class="label">Say</div><ul>
+          <li>4 Mbaud, 8N1; sync bytes, command, length, CRC-16.</li>
+          <li>PC sends the raw 4800-byte image; the board answers with 64 bytes: class, 4 scores and timings per network.</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="seg live">
+    <div class="time"><b>8:45</b><span>3:00</span><i class="tag">live</i></div>
+    <div class="body">
+      <h3>7 · Live demonstration</h3>
+      <p>Run these one after another in the prepared terminal and narrate as each one finishes.</p>
+      <div class="label">a · Program the board (or press Run in Vitis)</div>
+      <div class="cmd"><button class="copy" type="button">Copy</button><pre>C:\AMDDesignTools\2026.1\Vitis\bin\xsdb.bat firmware\run_on_board.tcl
+python pc\app.py --port COM4 info</pre></div>
+      <div class="label">b · UART tested on its own, without the networks</div>
+      <div class="cmd"><button class="copy" type="button">Copy</button><pre>python pc\app.py --port COM4 echo -n 50</pre></div>
+      <p>Expect <code>errors 0</code> and about 43 ms per 4.8 KB round trip.</p>
+      <div class="label">c · Full pipeline on 8 test images, both networks</div>
+      <div class="cmd"><button class="copy" type="button">Copy</button><pre>python pc\app.py --port COM4 demo</pre></div>
+      <p>A window shows each image with its true label and the CNN and SNN predictions plus accelerator time. Point at one image and read out the row.</p>
+      <div class="label">d · Images the SNN gets wrong</div>
+      <div class="cmd"><button class="copy" type="button">Copy</button><pre>python pc\app.py --port COM4 demo --image dataset\test\Circle\circle_00013.png dataset\test\Circle\circle_00051.png dataset\test\Square\square_00026.png dataset\test\Square\square_00053.png</pre></div>
+      <p>True labels: circle, circle, square, square. With <code>--image</code> the window shows <code>true: ?</code> and no OK/X marks, so say the true labels out loud. The CNN is right on all four; the SNN calls them figure-8 or triangle, which shows where the hand-made encoding loses information.</p>
+      <div class="label">e · Whole test set (about 40 s)</div>
+      <div class="cmd"><button class="copy" type="button">Copy</button><pre>python pc\app.py --port COM4 eval</pre></div>
+      <p>Then open the two confusion matrices in the new <code>pc\results\both_…</code> folder.</p>
+    </div>
+  </div>
+
+  <div class="seg">
+    <div class="time"><b>11:45</b><span>1:45</span><i class="tag">explain</i></div>
+    <div class="body">
+      <h3>8 · Performance comparison</h3>
+      <div class="cols">
+        <div><div class="label">On screen</div><p>Report Table 1, then diagram 6 (timing bar).</p></div>
+        <div class="say"><div class="label">Say</div><ul>
+          <li>Accuracy 100 % vs 97.9 %; per class the SNN loses 2–3 %.</li>
+          <li>Accelerator 2.84 ms vs 0.197 ms; energy 755 µJ vs 11 µJ.</li>
+          <li>Resources: CNN 2.7× the LUTs and 6.6× the DSPs.</li>
+          <li>UART measured separately: 12 ms to receive one image, which is more than all compute together (5.2 ms). Round trip 30.7 ms, 31 images/s.</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="seg">
+    <div class="time"><b>13:30</b><span>1:30</span><i class="tag">explain</i></div>
+    <div class="body">
+      <h3>9 · Limitations, trade-offs, next steps</h3>
+      <div class="cols">
+        <div><div class="label">On screen</div><p>Report discussion paragraph, or one closing slide.</p></div>
+        <div class="say"><div class="label">Say</div><ul>
+          <li>SNN encoder runs on the CPU (1.8 ms, 9× the SNN itself); moving it to the FPGA is the next step.</li>
+          <li>UART is the bottleneck: Ethernet, sending 1 KB of features instead of 4.8 KB of pixels, DMA with double buffering.</li>
+          <li>CNN C-simulation only ran 400 of 1200 images (PC memory); the board result on all 1200 covers it.</li>
+          <li>DFX bonus not done; T > 1 time steps could trade SNN speed for accuracy.</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<script>
+document.querySelectorAll('.copy').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var pre = btn.parentElement.querySelector('pre');
+    var text = pre.textContent;
+    function selectIt(){ var r=document.createRange(); r.selectNodeContents(pre); var s=window.getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent='Select'; }
+    try {
+      navigator.clipboard.writeText(text).then(function(){ btn.textContent='Copied'; setTimeout(function(){btn.textContent='Copy';},1500); }, selectIt);
+    } catch(e){ selectIt(); }
+  });
+});
+try {
+  document.querySelectorAll('.check input').forEach(function(cb){
+    if (localStorage.getItem('vp-'+cb.id) === '1') cb.checked = true;
+    cb.addEventListener('change', function(){ try { localStorage.setItem('vp-'+cb.id, cb.checked ? '1' : '0'); } catch(e){} });
+  });
+} catch(e){}
+</script>
