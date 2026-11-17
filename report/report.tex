@@ -5,6 +5,7 @@
 \usepackage{tikz}
 \usetikzlibrary{positioning,arrows.meta,fit,backgrounds}
 \captionsetup{font=small,skip=3pt}
+\hypersetup{colorlinks=true, linkcolor=black, urlcolor=blue!60!black}
 \setlength{\parskip}{2pt}\setlength{\parindent}{0pt}
 
 % ------------------------------------------------------------------
@@ -12,8 +13,9 @@
 % ------------------------------------------------------------------
 \newcommand{\TBD}{\textcolor{red}{TBD}}
 \newcommand{\videolink}{\TBD}
-\newcommand{\gitHW}{\TBD}
-\newcommand{\gitSW}{\TBD}
+\newcommand{\gitRepo}{https://github.com/AdrianMaslak/embedded_neural_network}
+\newcommand{\gitHW}{\href{\gitRepo/tree/main/vivado}{\texttt{hls/}, \texttt{vivado/}}}
+\newcommand{\gitSW}{\href{\gitRepo/tree/main/firmware}{\texttt{firmware/}, \texttt{pc/}}}
 % software / C-simulation results (test set, 1200 images)
 \newcommand{\cnnKerasAcc}{100.0}
 \newcommand{\snnFloatAcc}{98.58}
@@ -34,9 +36,9 @@
 \begin{document}
 \maketitle
 \vspace{-0.4cm}
-\noindent\textbf{Video:} \videolink\quad
-\textbf{Hardware/platform repo:} \gitHW\quad
-\textbf{Application repo:} \gitSW
+\noindent\textbf{Video:} \videolink\\
+\textbf{Git repository:} \url{\gitRepo}\quad
+hardware/platform: \gitHW;\quad application: \gitSW
 
 % ==================================================================
 \section{Vision task and dataset}
