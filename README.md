@@ -54,7 +54,7 @@ with relative paths, so keep the folders where they are.
 | [`cnn/`](cnn/), [`snn/`](snn/) | Training and export scripts, trained models, plots |
 | [`tools/`](tools/) | Check that the firmware preprocessing equals the Python reference |
 | [`report/`](report/) | Report (LaTeX + PDF), diagrams, video plan |
-| [`docs/DFX.md`](docs/DFX.md) | Plan for the DFX bonus task (not done yet) |
+| [`docs/DFX.md`](docs/DFX.md) | DFX bonus: original plan (done, see `dfx/README.md`) |
 
 ## Requirements
 
@@ -126,12 +126,12 @@ which is why both were replaced. The report explains why.
 
 ## Known issues and decisions
 
-* **CNN C-simulation** ran for 400 of 1200 images before the PC ran out of memory. The CNN was
-  verified on the board instead (1200/1200 correct, same as Keras).
+* **CNN C-simulation** ran on all 1200 test images in three chunks of 400 and matched Keras on
+  1200/1200 (`hls/cnn/csim_results`); on the board 1200/1200 are correct too.
 * **Vivado connection automation** leaves the SNN's `m_axi_gmem` on a dead-end interconnect
   because the BRAM controller has only one slave port. `build.tcl` therefore connects it to
   `S01_AXI` of the CPU interconnect by hand and stops with an error if the BRAM is not mapped
   for both the CPU and the SNN.
 * **Timer** – the Vitis 2026.1 `xiltimer` library does not start the Cortex-A9 global timer
   when the program is loaded over JTAG, so the firmware starts and reads it directly.
-* **DFX** (bonus) is not done yet; see [`docs/DFX.md`](docs/DFX.md).
+* **DFX** (bonus) is done: CNN and SNN swap in one region at run time; see [`dfx/README.md`](dfx/README.md).

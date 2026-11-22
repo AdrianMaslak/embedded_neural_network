@@ -38,7 +38,7 @@
 \vspace{-0.4cm}
 \noindent\textbf{Video:} \videolink\\
 \textbf{Git repository:} \url{\gitRepo}\quad
-hardware/platform: \gitHW;\quad application: \gitSW
+hardware/platform: \gitHW;\quad application: \gitSW;\quad DFX bonus: \href{\gitRepo/tree/main/dfx}{\texttt{dfx/}}
 
 % ==================================================================
 \section{Vision task and dataset}
@@ -226,7 +226,7 @@ Time to swap (JTAG) & \multicolumn{2}{c}{about 2.5\,s} \\
 \bottomrule
 \end{tabular}
 \caption{DFX results on the PYNQ-Z2. The shared area has room for 36\,400 LUT, 100 BRAM tiles
-and 160 DSP; the fixed part around it uses only about 865 LUT.}
+and 160 DSP; the fixed part around it uses only about 865 LUT. The CNN uses a few more LUTs than in Table~\ref{tab:res} because of its wrapper.}
 \label{tab:dfx}
 \end{table}
 

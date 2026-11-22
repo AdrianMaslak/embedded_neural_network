@@ -40,7 +40,7 @@ Environment switches in `run_hls.tcl`:
 
 * **SNN** – C-simulation of all 1200 test images matches the Python integer model bit for bit
   (prediction and all four scores): 1175/1200 = 97.92 %. See `snn/hls_run.log`.
-* **CNN** – C-simulation stopped at image 400 of 1200 (PC out of memory); see `cnn/hls_csim.log`.
+* **CNN** – C-simulation of all 1200 test images, run in three chunks of 400, matches Keras on 1200/1200; see `cnn/csim_results/`.
   On the board all 1200 predictions are correct and equal to Keras.
 
 ## Reports
