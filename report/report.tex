@@ -79,9 +79,10 @@ LIF arithmetic ($\beta\approx115/128$), skips zero inputs and accumulates spikes
 
 \textbf{Verification.} For the SNN, a Python integer model reproduces the kernel exactly;
 C-simulation of all 1200 test images matched it bit-for-bit (prediction and all four
-membrane scores). The CNN C-simulation against the Keras model ran for 400 of the 1200
-images before the PC ran out of memory; the CNN was then verified on the board instead, where
-all 1200 predictions are correct (same as Keras). The firmware's C preprocessing was compiled
+membrane scores). For the CNN, running all 1200 images
+in one go made the PC run out of memory, so we changed the testbench to take a range of images
+and ran it in three chunks of 400. The fixed-point CNN gave the same answer as the Keras model
+on all 1200 images, and on the board all 1200 predictions are correct too. The firmware's C preprocessing was compiled
 on the PC and matched the Python features on all 1200 test images. On the board, both
 networks reproduce their PC reference accuracy exactly (Table~\ref{tab:res}).
 
@@ -191,8 +192,42 @@ the SNN is only $1.5\times$ faster than the CNN. Moving the encoder into the FPG
 this. Because the UART dominates, the most effective improvements are on the link: Ethernet
 or the USB-OTG port, sending compressed images, or sending only the 512 features (1\,KB
 instead of 4.8\,KB). Inside the board, DMA streaming with double buffering would overlap
-receiving one image with processing the previous one. Further steps are DFX to swap both
-networks into one reconfigurable region (the bonus task, not done), and $T>1$ rate or
-temporal coding to trade SNN latency for accuracy.
+receiving one image with processing the previous one. Another step would be $T>1$ rate or
+temporal coding, to trade some SNN speed for accuracy.
+
+% ==================================================================
+\section{Bonus: swapping the networks with DFX}
+We only ever need one network at a time, so for the bonus we put both of them in the same
+area of the FPGA and swap between them while the board is running (Dynamic Function eXchange).
+For this to work, both networks have to fit the same slot. We gave each IP a small wrapper so
+they have exactly the same registers and the same memory port, which means the SNN now reads
+its features from DDR like the CNN instead of from the BRAM. Each network also writes an id
+number, so the firmware can tell which one is loaded. The shared area covers the lower two
+thirds of the chip and is sized for the CNN, since it is the bigger one.
+
+A swap loads a 4.2\,MB partial bitstream over JTAG and takes about 2.5\,s, while the CPU
+keeps running. The first time we tried it, the board froze right after the swap. While the
+area is being rewritten its outputs change randomly, and that locked up the AXI bus. Resetting
+the FPGA logic after every swap fixed it (a DFX decoupler would be the proper fix). Vivado's
+\texttt{pr\_verify} check passed and both versions meet timing at 100\,MHz. After each swap
+the networks give exactly the same results as in the normal design (Table~\ref{tab:dfx}).
+
+\begin{table}[h]
+\centering\small
+\begin{tabular}{lcc}
+\toprule
+ & CNN loaded & SNN loaded \\
+\midrule
+Test accuracy on board (1200 images) & 100\,\% & 97.92\,\% \\
+Measured IP time & 2\,840\,\textmu s & 197\,\textmu s \\
+LUT / BRAM36 eq.\ / DSP in the shared area & 10\,221 / 68 / 53 & 3\,948 / 14.5 / 8 \\
+Power on chip (whole design) & 1.72\,W & 1.49\,W \\
+Time to swap (JTAG) & \multicolumn{2}{c}{about 2.5\,s} \\
+\bottomrule
+\end{tabular}
+\caption{DFX results on the PYNQ-Z2. The shared area has room for 36\,400 LUT, 100 BRAM tiles
+and 160 DSP; the fixed part around it uses only about 865 LUT.}
+\label{tab:dfx}
+\end{table}
 
 \end{document}
