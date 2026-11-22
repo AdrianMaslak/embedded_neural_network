@@ -1,0 +1,233 @@
+attempting to launch hw_server
+
+****** Xilinx hw_server v2026.1
+  **** Build date : May 29 2026 at 14:55:19
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+
+INFO: hw_server application started
+INFO: Use Ctrl-C to exit hw_server application
+
+
+
+****** Xilinx hw_server v2026.1
+
+  **** Build date : May 29 2026 at 14:55:19
+
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+
+    ** Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+
+
+
+INFO: hw_server application started
+
+INFO: Use Ctrl-C to exit hw_server application
+
+
+
+
+INFO: To connect to this hw_server instance use url: TCP:127.0.0.1:3121
+
+
+
+DFX firmware running with CNN loaded - pc/app.py info
+{
+  "have_cnn": true,
+  "have_snn": false,
+  "baud": 4000000,
+  "timer_hz": 325000000,
+  "version": "0x100"
+}
+[1/100] CNN acc 1.000
+[100/100] CNN acc 1.000
+{
+  "split": "test",
+  "images": 100,
+  "baud": 4000000,
+  "sim": false,
+  "request_bytes": 4807,
+  "response_bytes": 38,
+  "uart_wire_time_us": 12112.5,
+  "board_rx_time_us": {
+    "mean": 12005.0,
+    "std": 0.0,
+    "min": 12005.0,
+    "max": 12005.0
+  },
+  "round_trip_us": {
+    "mean": 31337.146998848766,
+    "std": 659.4112007796449,
+    "min": 25146.400002995506,
+    "max": 32026.20000229217
+  },
+  "images_per_s_end_to_end": 31.30943411168918,
+  "uart_overhead_us": {
+    "mean": 28208.086998848765,
+    "std": 659.4060264765756,
+    "min": 22017.400002995506,
+    "max": 28897.20000229217
+  }
+}
+CNN: acc 1.0000  per-class {'Circle': 1.0, 'Square': 1.0, 'Triangle': 1.0, 'Figure8': 1.0}  IP 2840.1 us  pre 289.0 us
+saved -> C:\a2\pc\results\cnn_20261121_232540
+attempting to launch hw_server
+
+****** Xilinx hw_server v2026.1
+  **** Build date : May 29 2026 at 14:55:19
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+
+INFO: hw_server application started
+INFO: Use Ctrl-C to exit hw_server application
+
+
+
+****** Xilinx hw_server v2026.1
+
+  **** Build date : May 29 2026 at 14:55:19
+
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+
+    ** Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+
+
+
+INFO: hw_server application started
+
+INFO: Use Ctrl-C to exit hw_server application
+
+
+
+
+INFO: To connect to this hw_server instance use url: TCP:127.0.0.1:3121
+
+
+
+SWAP SNN: partial bitstream 4213030 bytes loaded over JTAG in 2569 ms
+PL reset pulsed (FPGA_RST_CTRL)
+{
+  "have_cnn": false,
+  "have_snn": true,
+  "baud": 4000000,
+  "timer_hz": 325000000,
+  "version": "0x100"
+}
+[1/1200] SNN acc 1.000
+[101/1200] SNN acc 0.980
+[201/1200] SNN acc 0.975
+[301/1200] SNN acc 0.980
+[401/1200] SNN acc 0.975
+[501/1200] SNN acc 0.976
+[601/1200] SNN acc 0.978
+[701/1200] SNN acc 0.977
+[801/1200] SNN acc 0.978
+[901/1200] SNN acc 0.978
+[1001/1200] SNN acc 0.979
+[1101/1200] SNN acc 0.978
+[1200/1200] SNN acc 0.979
+{
+  "split": "test",
+  "images": 1200,
+  "baud": 4000000,
+  "sim": false,
+  "request_bytes": 4807,
+  "response_bytes": 38,
+  "uart_wire_time_us": 12112.5,
+  "board_rx_time_us": {
+    "mean": 12009.635833333334,
+    "std": 160.52305093860787,
+    "min": 12005.0,
+    "max": 17568.0
+  },
+  "round_trip_us": {
+    "mean": 31388.057000028006,
+    "std": 1262.630884917931,
+    "min": 16762.70001917146,
+    "max": 46111.5000071004
+  },
+  "images_per_s_end_to_end": 31.258254702702224,
+  "uart_overhead_us": {
+    "mean": 29425.41033336134,
+    "std": 1262.304799056765,
+    "min": 14700.700019171461,
+    "max": 44132.5000071004
+  }
+}
+SNN: acc 0.9792  per-class {'Circle': 0.98, 'Square': 0.9767, 'Triangle': 0.9767, 'Figure8': 0.9833}  IP 197.2 us  pre 1765.4 us
+saved -> C:\a2\pc\results\snn_20261121_232601
+attempting to launch hw_server
+
+****** Xilinx hw_server v2026.1
+  **** Build date : May 29 2026 at 14:55:19
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+
+INFO: hw_server application started
+INFO: Use Ctrl-C to exit hw_server application
+
+
+
+****** Xilinx hw_server v2026.1
+
+  **** Build date : May 29 2026 at 14:55:19
+
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+
+    ** Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+
+
+
+INFO: hw_server application started
+
+INFO: Use Ctrl-C to exit hw_server application
+
+
+
+
+INFO: To connect to this hw_server instance use url: TCP:127.0.0.1:3121
+
+
+
+SWAP CNN: partial bitstream 4213030 bytes loaded over JTAG in 2549 ms
+PL reset pulsed (FPGA_RST_CTRL)
+{
+  "have_cnn": true,
+  "have_snn": false,
+  "baud": 4000000,
+  "timer_hz": 325000000,
+  "version": "0x100"
+}
+[1/100] CNN acc 1.000
+[100/100] CNN acc 1.000
+{
+  "split": "test",
+  "images": 100,
+  "baud": 4000000,
+  "sim": false,
+  "request_bytes": 4807,
+  "response_bytes": 38,
+  "uart_wire_time_us": 12112.5,
+  "board_rx_time_us": {
+    "mean": 12005.0,
+    "std": 0.0,
+    "min": 12005.0,
+    "max": 12005.0
+  },
+  "round_trip_us": {
+    "mean": 31412.987000658177,
+    "std": 488.2299021173992,
+    "min": 28004.099993268028,
+    "max": 32869.6999931708
+  },
+  "images_per_s_end_to_end": 31.281164837923388,
+  "uart_overhead_us": {
+    "mean": 28283.957000658178,
+    "std": 488.23995498345664,
+    "min": 24875.099993268028,
+    "max": 29740.699993170798
+  }
+}
+CNN: acc 1.0000  per-class {'Circle': 1.0, 'Square': 1.0, 'Triangle': 1.0, 'Figure8': 1.0}  IP 2840.0 us  pre 289.0 us
+saved -> C:\a2\pc\results\cnn_20261121_232655
+BOARD_TEST_DONE

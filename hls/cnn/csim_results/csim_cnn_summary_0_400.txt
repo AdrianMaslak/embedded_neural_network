@@ -1,0 +1,13 @@
+CNN C-simulation, test images 0..399 (400)
+HLS CNN accuracy   : 1.0000 (400/400)
+Keras accuracy     : 1.0000 (400/400)
+agreement w/ Keras : 1.0000 (400/400)
+
+confusion (rows=true, cols=pred)
+            Circle   Square Triangle  Figure8
+   Circle      300        0        0        0
+   Square        0      100        0        0
+ Triangle        0        0        0        0
+  Figure8        0        0        0        0
+
+RESULT: PASS (criterion: agreement >= 98 %)

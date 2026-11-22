@@ -1,0 +1,97 @@
+
+****** vitis-run v2026.1 (64-bit)
+  **** SW Build 6511674 on 2026-06-16-13:14:00
+  **** Start of session at: Sat Nov 21 13:56:34 2026
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+
+  **** HLS Build v2026.1 6493734
+Sourcing Tcl script 'C:/a2/hls/cnn/run_hls.tcl'
+INFO: [HLS 200-1510] Running: open_project -reset cnn_csim 
+WARNING: [HLS 200-2182] The 'cnn_csim' project will not automatically appear within Vitis IDE workspaces and is meant only for TCL batch use.  Please use open_component instead of open_project/open_solution to generate Vitis IDE compatible component files and directory structure.
+Resolution: For help on HLS 200-2182 see docs.amd.com/access/sources/dita/topic?Doc_Version=2026.1%20English&url=ug1448-hls-guidance&resourceid=200-2182.html
+INFO: [HLS 200-10] Opening and resetting solution 'C:/a2/hls/cnn/cnn_csim'.
+INFO: [HLS 200-1510] Running: set_top shape_cnn 
+INFO: [HLS 200-1510] Running: add_files shape_cnn.cpp 
+INFO: [HLS 200-10] Adding design file 'shape_cnn.cpp' to the project
+INFO: [HLS 200-1510] Running: add_files -tb shape_cnn_tb.cpp 
+INFO: [HLS 200-10] Adding test bench file 'shape_cnn_tb.cpp' to the project
+INFO: [HLS 200-1510] Running: add_files -tb cnn_test_vectors.txt 
+INFO: [HLS 200-10] Adding test bench file 'cnn_test_vectors.txt' to the project
+INFO: [HLS 200-1510] Running: open_solution -reset sol1 -flow_target vivado 
+INFO: [HLS 200-10] Creating and opening solution 'C:/a2/hls/cnn/cnn_csim/sol1'.
+INFO: [HLS 200-10] Cleaning up the solution database.
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+Resolution: For help on HLS 200-1505 see docs.amd.com/access/sources/dita/topic?Doc_Version=2026.1%20English&url=ug1448-hls-guidance&resourceid=200-1505.html
+WARNING: [HLS 200-2149] The 'flow_target' option is deprecated and will be removed in a future release. For 'vivado' value you may simply remove the option for equivalent behavior.
+WARNING: [HLS 200-484] The 'open_solution -flow_target' command is deprecated and will be removed in a future release.
+INFO: [HLS 200-1510] Running: set_part xc7z020clg400-1 
+INFO: [HLS 200-1611] Setting target device to 'xc7z020-clg400-1'
+INFO: [HLS 200-1510] Running: csim_design -O -argv 800 400 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [HLS 200-2191] C-Simulation will use clang-16 as the compiler
+INFO: [HLS 200-2036] Building optimized C Simulation binaries
+   Compiling ../../../../shape_cnn_tb.cpp in release mode
+   Compiling ../../../../shape_cnn.cpp in release mode
+   Generating csim.exe
+In file included from ../../../../shape_cnn_tb.cpp:22:
+In file included from ../../../../shape_cnn.h:2:
+In file included from C:/AMDDesignTools/2026.1/Vitis/include\ap_fixed.h:9:
+In file included from C:/AMDDesignTools/2026.1/Vitis/include\etc/ap_common.h:668:
+In file included from C:/AMDDesignTools/2026.1/Vitis/include\etc/ap_private.h:68:
+In file included from C:/AMDDesignTools/2026.1/Vitis/include\hls_half.h:26:
+In file included from C:/AMDDesignTools/2026.1/Vitis/include/etc/hls_half_fpo.h:19:
+In file included from C:/AMDDesignTools/2026.1/Vitis/include\hls_fpo.h:140:
+In file included from C:/AMDDesignTools/2026.1/Vitis/include/floating_point_v7_1_bitacc_cmodel.h:150:
+C:/AMDDesignTools/2026.1/Vitis/include\gmp.h:58:9: warning: '__GMP_LIBGMP_DLL' macro redefined [-Wmacro-redefined]
+#define __GMP_LIBGMP_DLL  0
+        ^
+C:/AMDDesignTools/2026.1/Vitis/include/floating_point_v7_1_bitacc_cmodel.h:142:9: note: previous definition is here
+#define __GMP_LIBGMP_DLL 1
+        ^
+1 warning generated.
+In file included from ../../../../shape_cnn.cpp:10:
+In file included from ../../../../shape_cnn.h:2:
+In file included from C:/AMDDesignTools/2026.1/Vitis/include\ap_fixed.h:9:
+In file included from C:/AMDDesignTools/2026.1/Vitis/include\etc/ap_common.h:668:
+In file included from C:/AMDDesignTools/2026.1/Vitis/include\etc/ap_private.h:68:
+In file included from C:/AMDDesignTools/2026.1/Vitis/include\hls_half.h:26:
+In file included from C:/AMDDesignTools/2026.1/Vitis/include/etc/hls_half_fpo.h:19:
+In file included from C:/AMDDesignTools/2026.1/Vitis/include\hls_fpo.h:140:
+In file included from C:/AMDDesignTools/2026.1/Vitis/include/floating_point_v7_1_bitacc_cmodel.h:150:
+C:/AMDDesignTools/2026.1/Vitis/include\gmp.h:58:9: warning: '__GMP_LIBGMP_DLL' macro redefined [-Wmacro-redefined]
+#define __GMP_LIBGMP_DLL  0
+        ^
+C:/AMDDesignTools/2026.1/Vitis/include/floating_point_v7_1_bitacc_cmodel.h:142:9: note: previous definition is here
+#define __GMP_LIBGMP_DLL 1
+        ^
+1 warning generated.
+CNN C-sim: images 800..1199 (400 of 1200)
+image 50/400  correct 50  agree 50
+image 100/400  correct 100  agree 100
+image 150/400  correct 150  agree 150
+image 200/400  correct 200  agree 200
+image 250/400  correct 250  agree 250
+image 300/400  correct 300  agree 300
+image 350/400  correct 350  agree 350
+image 400/400  correct 400  agree 400
+
+CNN C-simulation, test images 800..1199 (400)
+HLS CNN accuracy   : 1.0000 (400/400)
+Keras accuracy     : 1.0000 (400/400)
+agreement w/ Keras : 1.0000 (400/400)
+
+confusion (rows=true, cols=pred)
+            Circle   Square Triangle  Figure8
+   Circle        0        0        0        0
+   Square        0        0        0        0
+ Triangle        0        0      100        0
+  Figure8        0        0        0      300
+
+RESULT: PASS (criterion: agreement >= 98 %)
+INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-2161] Finished Command csim_design Elapsed time: 00:06:00; Allocated memory: 0.387 MB.
+INFO: [HLS 200-112] Total CPU user time: 2 seconds. Total CPU system time: 4 seconds. Total elapsed time: 365.554 seconds; peak allocated memory: 164.387 MB.
+INFO: [vitis-run 60-791] Total elapsed time: 0h 6m 7s
+INFO: [vitis-run 60-1662] Stopping dispatch session having empty uuid.

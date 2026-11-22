@@ -1,0 +1,36 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2026.1 (win64) Build 6511674 Tue Jun 16 11:02:23 MDT 2026
+| Date         : Sat Nov 21 23:05:57 2026
+| Host         : Yassir running 64-bit major release  (build 9200)
+| Command      : report_utilization -hierarchical -hierarchical_depth 3 -file C:/a2/dfx/vivado/out/utilization_hier_snn.rpt
+| Design       : system_wrapper
+| Device       : xc7z020clg400-1
+| Speed File   : -1
+| Design State : Routed
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++--------------------+--------------------------+----------------+--------------+------------+------------+---------+------+------+--------+--------+------------+
+|      Instance      |          Module          |  PR Attribute  | Total PPLOCs | Total LUTs | Logic LUTs | LUTRAMs | SRLs |  FFs | RAMB36 | RAMB18 | DSP Blocks |
++--------------------+--------------------------+----------------+--------------+------------+------------+---------+------+------+--------+--------+------------+
+| system_wrapper     |                    (top) |              - |          197 |       4813 |       4165 |     386 |  262 | 4303 |     12 |      5 |          8 |
+|   system_i         |                   system |              - |            - |       4813 |       4165 |     386 |  262 | 4303 |     12 |      5 |          8 |
+|     rp_nn          |            rm_snn_inst_0 | Reconfigurable |          197 |       3948 |       3467 |     286 |  195 | 3447 |     12 |      5 |          8 |
+|       nn           |       rm_snn_inst_0_nn_0 | Reconfigurable |            - |       3921 |       3440 |     286 |  195 | 3447 |     12 |      5 |          8 |
+|     hp_sc          |           system_hp_sc_0 |         Static |            - |        486 |        381 |     100 |    5 |  393 |      0 |      0 |          0 |
+|       inst         |   system_hp_sc_0_bd_0529 |         Static |            - |        486 |        381 |     100 |    5 |  393 |      0 |      0 |          0 |
+|     ps_axi_periph  |   system_ps_axi_periph_0 |         Static |            - |        362 |        301 |       0 |   61 |  430 |      0 |      0 |          0 |
+|       s00_couplers | s00_couplers_imp_1IFC2JG |         Static |            - |        362 |        301 |       0 |   61 |  430 |      0 |      0 |          0 |
++--------------------+--------------------------+----------------+--------------+------------+------------+---------+------+------+--------+--------+------------+
+* Note: The sum of lower-level cells may be larger than their parent cells total, due to cross-hierarchy LUT combining
+
+

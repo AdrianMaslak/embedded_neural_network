@@ -51,3 +51,13 @@ Assig 2.pdf
 Thumbs.db
 desktop.ini
 .DS_Store
+
+# ---- DFX bonus: build products are regenerated, dfx/vivado/out/ is kept ----
+dfx/hls/*_prj/
+dfx/vivado/build/
+dfx/vivado/NA/
+dfx/vivado/hd_visual/
+dfx/firmware/ws/
+dfx/*.txt
+dfx/**/*.log
+!dfx/results/*.log

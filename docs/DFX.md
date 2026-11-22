@@ -1,3 +1,5 @@
+> **Status:** implemented and tested on the PYNQ-Z2, see [dfx/README.md](../dfx/README.md).
+
 # DFX bonus: swapping CNN and SNN in one region
 
 Status: **not started.** The current design has both accelerators in the fabric at the same

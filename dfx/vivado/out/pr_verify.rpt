@@ -1,0 +1,5 @@
+Command: pr_verify -initial C:/a2/dfx/vivado/build/a2dfx.runs/impl_1/system_i_rp_nn_rm_cnn_inst_0_routed.dcp -additional C:/a2/dfx/vivado/build/a2dfx.runs/child_snn/system_i_rp_nn_rm_snn_inst_0_routed.dcp -file C:/a2/dfx/vivado/out/pr_verify.rpt
+Sat Nov 21 23:04:10 2026
+
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+ERROR: [Vivado 12-28863] Both C:/a2/dfx/vivado/build/a2dfx.runs/impl_1/system_i_rp_nn_rm_cnn_inst_0_routed.dcp and C:/a2/dfx/vivado/build/a2dfx.runs/child_snn/system_i_rp_nn_rm_snn_inst_0_routed.dcp are neither DFX nor Segmented Configuration Designs and are therefore the two designs cannot be compatible. Existing pr_verify...
