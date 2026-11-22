@@ -2,9 +2,8 @@
 
 # DFX bonus: swapping CNN and SNN in one region
 
-Status: **not started.** The current design has both accelerators in the fabric at the same
-time, which already meets the base assignment. This file is the plan for the bonus task: one
-reconfigurable partition (RP) that holds either the CNN or the SNN, swapped at run time.
+This was the plan for the bonus task, written before it was done: one reconfigurable
+partition (RP) that holds either the CNN or the SNN, swapped at run time.
 
 Work on a branch (for example `dfx`) and keep `vivado/out/` of `main` untouched, so the
 measured results in the report stay reproducible.

@@ -7,7 +7,7 @@ swapped at run time with a partial bitstream while the firmware keeps running.
 
 | | CNN in RP | SNN in RP |
 |---|---|---|
-| Accuracy on the board | 100 % (1200/1200) | 97.92 % |
+| Accuracy on the board | 100 % (100/100 images) | 97.92 % (1200 images) |
 | Accelerator time | 2840 us | 197 us |
 | Module LUT / FF | 10 221 / 8 810 | 3 948 / 3 447 |
 | Module BRAM36 / DSP | 68 / 53 | 14.5 / 8 |
@@ -17,7 +17,9 @@ swapped at run time with a partial bitstream while the firmware keeps running.
 - RP = lower four clock regions (36 400 LUT, 72 800 FF, 100 BRAM tiles, 160 DSP);
   static part about 865 LUT.
 - Partial bitstream 4 213 030 bytes, loaded over JTAG in about 2.55 s.
-- `pr_verify`: the two configurations are compatible.
+- `pr_verify` has not run successfully yet: `out/pr_verify.rpt` was given the
+  module-level checkpoints and stops with an error. It must compare the two full routed
+  designs (see the end of this file).
 - Board log: `results/board_test.log` (CNN, swap to SNN, SNN, swap back, CNN).
 
 ## How it works
@@ -62,3 +64,19 @@ xsdb dfx\firmware\reset_pl.tcl
 python pc\app.py --port COM4 info
 python pc\app.py --port COM4 eval --net snn
 ```
+
+## Still to check
+
+1. **pr_verify on the full designs.** Run in Vivado Tcl on the machine that has `dfx/vivado/build`:
+
+   ```
+   pr_verify -initial    dfx/vivado/build/a2dfx.runs/impl_1/system_wrapper_routed.dcp \
+             -additional dfx/vivado/build/a2dfx.runs/child_snn/system_wrapper_routed.dcp \
+             -file dfx/vivado/out/pr_verify.rpt
+   ```
+
+   (use the top-level `*_routed.dcp` of each run, not the `*_rm_*_inst_0_routed.dcp` module
+   checkpoints). The report must say the two configurations are compatible, with no ERROR.
+2. **CNN on all 1200 images** with the CNN loaded:
+   `python pc\app.py --port COM4 eval --net cnn` (`results/board_test.log` has only 100 images
+   for the CNN).
