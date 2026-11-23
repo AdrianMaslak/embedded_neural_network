@@ -9,9 +9,8 @@
 \setlength{\parskip}{2pt}\setlength{\parindent}{0pt}
 
 % ------------------------------------------------------------------
-% Numbers (TBD = to be measured on the board with pc/app.py eval)
+% Numbers used in the text and tables
 % ------------------------------------------------------------------
-\newcommand{\TBD}{\textcolor{red}{TBD}}
 \newcommand{\videolink}{\url{https://youtu.be/2bmPeDtzU-s}}
 \newcommand{\gitRepo}{https://github.com/AdrianMaslak/embedded_neural_network}
 \newcommand{\gitHW}{\href{\gitRepo/tree/main/vivado}{\texttt{hls/}, \texttt{vivado/}}}
@@ -42,49 +41,55 @@ hardware/platform: \gitHW;\quad application: \gitSW;\quad DFX bonus: \href{\gitR
 
 % ==================================================================
 \section{Vision task and dataset}
-Each $60\times80$ grayscale image contains one shape: \emph{circle, square, triangle} or
-\emph{figure-of-eight}. A generator (\texttt{gen\_shapes.py}) draws the shapes
-anti-aliased at $4\times$ resolution with random size (16--54\,px), position, rotation
-(0--360$^\circ$), line thickness (1--4\,px), 25\,\% filled shapes, background level and
-lighting gradient, contrast, blur and Gaussian noise. Figure-eights are either two
-stacked loops or a lemniscate. Train/validation/test = 1500/300/300 images per class,
-each split and class drawn from an independent seeded random stream, so the splits are
-disjoint and reproducible; both networks use exactly the same splits and test images.
+Each image is $60\times80$ pixels, grayscale, and shows one of four shapes: a
+\emph{circle, square, triangle} or \emph{figure-of-eight}. Our generator
+(\texttt{gen\_shapes.py}) draws every shape at $4\times$ resolution and scales it down, which
+keeps the edges smooth. Size (16--54\,px), position, rotation (0--360$^\circ$) and line
+thickness (1--4\,px) are random, and a quarter of the shapes are filled. On top of that come a
+varying background, a lighting gradient, different contrast, blur and Gaussian noise. A
+figure-eight is drawn either as two stacked loops or as a lemniscate. Per class there are
+1500/300/300 images for training, validation and test. Since every split and class has its own
+seeded random generator, the splits never overlap and can be regenerated exactly, and both
+networks see the same images.
 
 % ==================================================================
 \section{Network designs}
-\textbf{CNN (ShapeCNN, 8.6\,k parameters).} Four Conv$3\times3$+BN+ReLU blocks with
-8/16/16/32 channels, $2\times2$ max-pooling after the first three
-($60{\times}80\to30{\times}40\to15{\times}20\to7{\times}10$), global average pooling and a
-dense $32\to4$ layer; trained in Keras (Adam, early stopping), BN folded into the
-convolutions for export. The lecture's depthwise-separable CNN only reached
-$\approx$32\,\% here: its receptive field ($\approx8$\,px) sees line segments, not shapes;
-ShapeCNN's is $\approx38$\,px. The HLS kernel uses Q8.8 activations
-(\texttt{ap\_fixed<16,8>}, rounding + saturation), 18-bit weights and 32-bit accumulators.
-Each block is one flattened loop pipelined at II\,=\,1 that computes one $3\times3$ tap per
-cycle for all input channels in parallel (block 1: all 8 output channels), with the
-max-pool fused into the loop.
+\textbf{CNN (ShapeCNN, 8.6\,k parameters).} Our first attempt, the depthwise-separable CNN
+from the lecture, only reached about 32\,\%. Each of its outputs sees about 8 pixels, enough
+for a piece of a line but not for a whole shape. ShapeCNN instead stacks four blocks of
+$3\times3$ convolution, batch norm and ReLU with 8, 16, 16 and 32 channels. After each of the
+first three, a $2\times2$ max-pool halves the image
+($60{\times}80\to30{\times}40\to15{\times}20\to7{\times}10$), and global average pooling plus
+one dense layer ($32\to4$) produce the four class scores. By the last block every output sees
+about 38 pixels. Training was done in Keras (Adam, early stopping), and before export the batch
+norm was folded into the convolution weights. On the FPGA, activations are Q8.8
+(\texttt{ap\_fixed<16,8>} with rounding and saturation), weights 18-bit and accumulators
+32-bit. Every block is one flattened loop pipelined at II\,=\,1: each clock cycle it handles
+one $3\times3$ tap for all input channels at once (in block 1 also for all 8 output channels),
+with the max-pool done inside the same loop.
 
 \textbf{SNN (512--64--32--4 LIF).} Leaky integrate-and-fire neurons (snnTorch,
-$\beta=0.9$, threshold 1, subtractive reset, fast-sigmoid surrogate gradient), readout =
-output membrane potential, $T=1$ time step. \emph{Input encoding:} integer Sobel
-$|G_x|+|G_y|$; a pixel emits a spike if $|G|>\max|G|/3$ (contrast-adaptive, rejects noise),
-into channel 0 if $|G_x|\ge|G_y|$ else channel 1. Spikes are binned on a $16\times16$ grid
-laid over the bounding square of all spikes (translation/scale normalisation) and the
-counts clipped at 4 give $16\cdot16\cdot2=512$ features $\in\{0,32,\dots,128\}$. The lecture
-encoding (ON/OFF of $G_x+G_y$ at the 90th percentile, fixed grid) gave 31\,\% on this
-data: noise filled the percentile and $G_x+G_y$ vanishes on $45^\circ$ edges.
-Weights are quantised to int16 ($\times128$); the HLS kernel (lecture 8) uses integer
-LIF arithmetic ($\beta\approx115/128$), skips zero inputs and accumulates spikes as additions.
+$\beta=0.9$, threshold 1, subtractive reset, fast-sigmoid surrogate gradient) run for a single
+time step ($T=1$), and the output neuron with the highest membrane potential gives the class.
+Most of the work went into the input encoding. With the lecture encoding (ON/OFF spikes of
+$G_x+G_y$ at the 90th percentile on a fixed grid) only 31\,\% of our test images were
+classified correctly: noise filled up the percentile, and $G_x+G_y$ cancels out on $45^\circ$
+edges. Our version uses the integer Sobel magnitude $|G_x|+|G_y|$ and lets a pixel spike when
+it exceeds a third of the image maximum, so the threshold follows the contrast and ignores the
+noise. Mostly vertical edges ($|G_x|\ge|G_y|$) go to channel 0, all others to channel 1. We then lay a $16\times16$ grid over the bounding square of all spikes,
+which drops the position and size of the shape. Each cell counts its spikes (clipped at 4), so we
+get $16\cdot16\cdot2=512$ features with values $\{0,32,\dots,128\}$. We store the weights as
+int16 ($\times128$).
+Following lecture 8, the HLS kernel uses integer LIF arithmetic ($\beta\approx115/128$),
+skips zero inputs and simply adds up the weights of the spikes.
 
-\textbf{Verification.} For the SNN, a Python integer model reproduces the kernel exactly;
-C-simulation of all 1200 test images matched it bit-for-bit (prediction and all four
-membrane scores). For the CNN, running all 1200 images
-in one go made the PC run out of memory, so we changed the testbench to take a range of images
-and ran it in three chunks of 400. The fixed-point CNN gave the same answer as the Keras model
-on all 1200 images, and on the board all 1200 predictions are correct too. The firmware's C preprocessing was compiled
-on the PC and matched the Python features on all 1200 test images. On the board, both
-networks reproduce their PC reference accuracy exactly (Table~\ref{tab:res}).
+\textbf{Verification.} A Python integer model mirrors the SNN kernel exactly, and in
+C-simulation all 1200 test images matched it bit for bit, both the prediction and all four
+membrane scores. For the CNN, simulating all 1200 images in one go ran the PC out of memory,
+so the testbench now takes a range of images and was run in three chunks of 400. In all of
+them the fixed-point CNN agreed with the Keras model. The firmware's C preprocessing, compiled
+on the PC, produced the same features as the Python code on every test image. On the board,
+both networks then reach exactly their PC accuracy (Table~\ref{tab:res}).
 
 % ==================================================================
 \section{Hardware--software architecture, memory and UART protocol}
@@ -122,28 +127,29 @@ CNN reads its input from DDR via \texttt{HP0}; SNN reads its features from an AX
 CPU's interconnect (dashed: AXI-Lite control).}
 \end{figure}
 
-\textbf{Division of work.} The PC only sends raw 8-bit images and displays/evaluates the
-answers. The CPU receives and checks frames, converts pixels to Q8.8 (CNN) or computes the
-512 spike features (SNN), starts the IP through AXI-Lite, polls \texttt{ap\_done}, reads the
-prediction and logits, and returns them with timing (global timer, 325\,MHz).
+\textbf{Division of work.} Apart from sending raw 8-bit images and showing and evaluating
+the answers, the PC does nothing. All the rest runs on the board: the CPU receives and checks
+each frame, converts the pixels to Q8.8 for the CNN or computes the 512 spike features for the
+SNN, and starts the IP over AXI-Lite. After polling \texttt{ap\_done} it reads the prediction
+and the scores and sends them back, together with timings from the global timer (325\,MHz).
 
-\textbf{Memory arrangement.} CNN: the CPU writes the $60\times80$ Q8.8 image (9.6\,KB) to a
-DDR buffer, flushes the D-cache and passes the address; the IP fetches it as AXI master
-through \texttt{S\_AXI\_HP0} into on-chip BRAM. SNN: the CPU writes the features into an
-8\,KB AXI BRAM (\texttt{0x4002\_0000}) through \texttt{M\_AXI\_GP0}; the IP reads them with
-its \texttt{m\_axi} port, which enters the same AXI interconnect as a second slave input
-(\texttt{S01}), so CPU and SNN see the BRAM at the same address. The BRAM controller has only
-one slave port; Vivado's connection automation had left the SNN master on an unconnected
-interconnect, so the SNN hung until this was wired by hand. Results are returned in AXI-Lite
-registers.
+\textbf{Memory arrangement.} Each IP gets its input in a different way. For the CNN, the
+CPU writes the Q8.8 image (9.6\,KB) to a DDR buffer, flushes the data cache and passes the
+address, and the IP fetches the image as an AXI master through \texttt{S\_AXI\_HP0} into its
+own BRAM. SNN features instead go through \texttt{M\_AXI\_GP0} into an 8\,KB AXI BRAM at
+\texttt{0x4002\_0000}. Because the BRAM controller has only one slave port, the SNN's
+\texttt{m\_axi} port is connected to a second input (\texttt{S01}) of the same interconnect,
+so CPU and SNN see the BRAM at the same address. Getting there took a while: Vivado's
+connection automation had put the SNN's master port on an interconnect that led nowhere, and
+the SNN hung until we wired it by hand. Results come back in AXI-Lite registers.
 
-\textbf{UART protocol.} PS UART0 (USB), 8N1, no flow control, 4\,000\,000\,Bd. Request
-\texttt{AA 55 | cmd | len(u16) | payload | CRC-16}; response
-\texttt{55 AA | cmd | status | len | payload | CRC-16} (CCITT, init \texttt{0xFFFF}, little
-endian). Commands: CNN, SNN, BOTH (payload = 4800-byte image), ECHO (link test without
-the accelerators), INFO. An inference reply carries the board receive time and per network
-\{class, preprocessing time, IP time, 4 logits\} (26\,B). The ECHO command was used to test
-image transfer before integrating the IPs.
+\textbf{UART protocol.} PS UART0 runs over USB at 4\,000\,000\,Bd, 8N1, without flow
+control. Requests have the form \texttt{AA 55 | cmd | len(u16) | payload | CRC-16}, responses
+\texttt{55 AA | cmd | status | len | payload | CRC-16} (CRC-16/CCITT, init \texttt{0xFFFF},
+little endian). Besides CNN, SNN and BOTH (each carrying the 4800-byte image) there are ECHO and
+INFO. An inference reply holds the board's receive time and, per network, the class,
+preprocessing time, IP time and 4 scores (26\,B). ECHO was useful early on, to test the image
+transfer before any IP was integrated.
 
 % ==================================================================
 \section{Results}
@@ -174,26 +180,26 @@ timing met (WNS +0.257\,ns). Whole design: 15\,584 LUT (29\,\%), 81 BRAM tiles (
 \label{tab:res}
 \end{table}
 
-\textbf{Communication overhead.} One image request is 4807 bytes and a BOTH reply 64 bytes
-(\SI{12.2}{ms} of wire time at 4\,Mbd). The board needs \uartMs\,ms to receive an image; the
-measured PC round trip for BOTH is \rttMs\,ms (31 images/s), of which only 5.2\,ms is
-preprocessing and inference. The UART is therefore $4\times$ slower than the CNN
-accelerator and $60\times$ slower than the SNN accelerator; the remaining 13.5\,ms are USB
-latency and PC-side Python. UART transfer time was measured separately with ECHO
-(50 images, 0 errors, 42.8\,ms round trip).
+\textbf{Communication overhead.} A request is 4807 bytes and a BOTH reply 64 bytes, or
+\SI{12.2}{ms} on the wire at 4\,Mbd. Just receiving an image takes the board \uartMs\,ms. On
+the PC, a full BOTH round trip measures \rttMs\,ms (31 images/s), of which only 5.2\,ms is
+preprocessing and inference. That makes the UART $4\times$ slower than the CNN and $60\times$
+slower than the SNN, with the remaining 13.5\,ms going to USB latency and the Python code on
+the PC. ECHO on its own (50 images, 0 errors) gave a 42.8\,ms round trip.
 
-\textbf{Discussion and future work.} The CNN is more accurate (100\,\% vs.\ 97.9\,\%; the SNN's
-25 errors are spread over all classes) but needs $2.7\times$ the LUTs, $6.6\times$ the DSPs and
-$70\times$ the energy per inference, and is $14\times$ slower. The SNN is cheap because the
-binary spikes between layers turn the hidden layers' multiplications into additions, the first
-layer skips zero inputs, and $T=1$ keeps it to a single pass. Its price is a hand-designed encoder: the spike
-features take 1.8\,ms on the CPU, $9\times$ the SNN inference itself, so end-to-end
-the SNN is only $1.5\times$ faster than the CNN. Moving the encoder into the FPGA would remove
-this. Because the UART dominates, the most effective improvements are on the link: Ethernet
-or the USB-OTG port, sending compressed images, or sending only the 512 features (1\,KB
-instead of 4.8\,KB). Inside the board, DMA streaming with double buffering would overlap
-receiving one image with processing the previous one. Another step would be $T>1$ rate or
-temporal coding, to trade some SNN speed for accuracy.
+\textbf{Discussion and future work.} In accuracy the CNN wins (100\,\% against 97.9\,\%,
+with the SNN's 25 errors spread over all classes). Everywhere else it loses: $2.7\times$ the
+LUTs, $6.6\times$ the DSPs, $70\times$ the energy per image, and $14\times$ slower. Most of the
+SNN's speed comes from its binary spikes. Since each spike is just a 0 or a 1, the hidden layers
+only add weights instead of multiplying. We also skip zero inputs in the first layer, and with
+$T=1$ the network runs just once. Its weak point is the hand-made encoder. Computing the spike
+features takes 1.8\,ms on the CPU, which is $9\times$ the time of the SNN itself. So end to end,
+the SNN is only $1.5\times$ faster than the CNN. Moving the encoder into the FPGA would close that
+gap. Since
+the UART is the real bottleneck, the biggest gains lie in the link: Ethernet or the USB-OTG
+port, compressed images, or sending only the 512 features (1\,KB instead of 4.8\,KB). DMA with
+double buffering could also receive the next image while the current one is processed.
+We could also try $T>1$ with rate or temporal coding, which might trade some SNN speed for accuracy.
 
 % ==================================================================
 \section{Bonus: swapping the networks with DFX}

@@ -2,6 +2,8 @@
 
 Assignment 2 – Accelerated AI for Vision Applications (SDU, Embedded Systems).
 
+Video: https://youtu.be/2bmPeDtzU-s · Report: [`report/report.pdf`](report/report.pdf)
+
 A PC application sends 60×80 grayscale images over UART to a PYNQ-Z2. The ARM CPU on the board
 preprocesses each image and runs it through a **CNN** or an **SNN** accelerator (both written in
 Vitis HLS and placed in the same bitstream), then sends the class and timing back to the PC.
@@ -53,8 +55,7 @@ with relative paths, so keep the folders where they are.
 | [`common.py`](common.py) | Class list and the reference preprocessing for both networks |
 | [`cnn/`](cnn/), [`snn/`](snn/) | Training and export scripts, trained models, plots |
 | [`tools/`](tools/) | Check that the firmware preprocessing equals the Python reference |
-| [`report/`](report/) | Report (LaTeX + PDF), diagrams, video plan |
-| [`docs/DFX.md`](docs/DFX.md) | DFX bonus: original plan (done, see `dfx/README.md`) |
+| [`report/`](report/) | Report (LaTeX + PDF) |
 
 ## Requirements
 

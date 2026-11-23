@@ -61,3 +61,6 @@ dfx/firmware/ws/
 dfx/*.txt
 dfx/**/*.log
 !dfx/results/*.log
+
+# ---- video material, kept locally only ----
+report/diagrams/

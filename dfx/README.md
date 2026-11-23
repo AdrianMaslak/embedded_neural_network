@@ -65,7 +65,7 @@ python pc\app.py --port COM4 info
 python pc\app.py --port COM4 eval --net snn
 ```
 
-## Still to check
+## Known gaps
 
 1. **pr_verify on the full designs.** Run in Vivado Tcl on the machine that has `dfx/vivado/build`:
 
