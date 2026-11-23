@@ -12,7 +12,7 @@
 % Numbers (TBD = to be measured on the board with pc/app.py eval)
 % ------------------------------------------------------------------
 \newcommand{\TBD}{\textcolor{red}{TBD}}
-\newcommand{\videolink}{\TBD}
+\newcommand{\videolink}{\url{https://youtu.be/2bmPeDtzU-s}}
 \newcommand{\gitRepo}{https://github.com/AdrianMaslak/embedded_neural_network}
 \newcommand{\gitHW}{\href{\gitRepo/tree/main/vivado}{\texttt{hls/}, \texttt{vivado/}}}
 \newcommand{\gitSW}{\href{\gitRepo/tree/main/firmware}{\texttt{firmware/}, \texttt{pc/}}}
@@ -184,9 +184,9 @@ latency and PC-side Python. UART transfer time was measured separately with ECHO
 
 \textbf{Discussion and future work.} The CNN is more accurate (100\,\% vs.\ 97.9\,\%; the SNN's
 25 errors are spread over all classes) but needs $2.7\times$ the LUTs, $6.6\times$ the DSPs and
-$70\times$ the energy per inference, and is $14\times$ slower. The SNN is cheap because binary
-spikes turn the first layer's multiplications into additions and zero inputs are skipped,
-and $T=1$ keeps it to a single pass. Its price is a hand-designed encoder: the spike
+$70\times$ the energy per inference, and is $14\times$ slower. The SNN is cheap because the
+binary spikes between layers turn the hidden layers' multiplications into additions, the first
+layer skips zero inputs, and $T=1$ keeps it to a single pass. Its price is a hand-designed encoder: the spike
 features take 1.8\,ms on the CPU, $9\times$ the SNN inference itself, so end-to-end
 the SNN is only $1.5\times$ faster than the CNN. Moving the encoder into the FPGA would remove
 this. Because the UART dominates, the most effective improvements are on the link: Ethernet

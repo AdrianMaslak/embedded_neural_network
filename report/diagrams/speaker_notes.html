@@ -1,0 +1,223 @@
+<title>Assignment 2 Speaker Notes</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: filter bar, then one card per segment: header (number, speaker, slot, measured length) + script with inline screen cues */
+:root{
+  --bg:#f5f7f8; --surface:#ffffff; --fg:#17202a; --muted:#5a6672; --line:#c9d1d8; --code-bg:#eef2f5;
+  --a:#1f5fbf; --a-soft:#e3ecfa; --y:#a3530c; --y-soft:#fbecdc; --cue:#127a6e; --cue-soft:#dff2ef; --warn:#b4331f;
+  --font-head:"IBM Plex Sans Condensed","Arial Narrow",Arial,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1418; --surface:#171e24; --fg:#e4e9ee; --muted:#97a3ae; --line:#2e3a44; --code-bg:#11181d;
+  --a:#6fa3f0; --a-soft:#16263d; --y:#f0a14f; --y-soft:#33240f; --cue:#4fc2b2; --cue-soft:#0f2a27; --warn:#f08a74; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1418; --surface:#171e24; --fg:#e4e9ee; --muted:#97a3ae; --line:#2e3a44; --code-bg:#11181d;
+  --a:#6fa3f0; --a-soft:#16263d; --y:#f0a14f; --y-soft:#33240f; --cue:#4fc2b2; --cue-soft:#0f2a27; --warn:#f08a74; color-scheme:dark}
+
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.65;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 64px}
+.wrap{max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+header{display:flex;flex-direction:column;gap:8px}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--font-head);font-weight:600;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:0;text-wrap:balance}
+h2{font-family:var(--font-head);font-weight:600;font-size:22px;margin:0}
+p{margin:0}
+.lede{color:var(--muted);max-width:68ch}
+
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.filters span{font-family:var(--font-mono);font-size:12px;color:var(--muted);margin-right:4px}
+.filters button{font-family:var(--font-body);font-size:14px;padding:6px 14px;border-radius:20px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.filters button:focus-visible{outline:2px solid var(--a);outline-offset:2px}
+.totals{font-family:var(--font-mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+.tips{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.tips ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px;font-size:15px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--a);border-radius:6px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.card[data-who="y"]{border-left-color:var(--y)}
+.card-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.card-head h2{flex:1 1 auto;min-width:0}
+.chip{font-family:var(--font-mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:3px;background:var(--a-soft);color:var(--a)}
+.card[data-who="y"] .chip{background:var(--y-soft);color:var(--y)}
+.slot{font-family:var(--font-mono);font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.est{font-family:var(--font-mono);font-size:12.5px;font-variant-numeric:tabular-nums}
+.est.over{color:var(--warn)}
+.script p{max-width:68ch}
+.script p + p{margin-top:10px}
+.cue{display:inline-block;font-family:var(--font-mono);font-size:12px;line-height:1.4;padding:1px 7px;border-radius:3px;background:var(--cue-soft);color:var(--cue);margin-right:4px;vertical-align:1px}
+.cmdcue{font-family:var(--font-mono);font-size:12.5px;background:var(--code-bg);padding:1px 5px;border-radius:3px}
+.hand{font-size:14px;color:var(--muted);font-style:italic}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Assignment 2 · 15-minute video · speaker notes</div>
+  <h1>Speaker notes</h1>
+  <p class="lede">Word-for-word scripts for all eleven segments. Green tags are screen cues, not spoken. The length next to each segment is measured from the script at 140 words per minute; live segments also need time for commands to run.</p>
+</header>
+
+<div class="filters" role="group" aria-label="Show segments for">
+  <span>SHOW</span>
+  <button type="button" id="f-all" data-f="all" aria-pressed="true">Both</button>
+  <button type="button" id="f-a" data-f="a" aria-pressed="false">Adrian</button>
+  <button type="button" id="f-y" data-f="y" aria-pressed="false">Yassir</button>
+  <span class="totals" id="totals"></span>
+</div>
+
+<div class="tips">
+  <h2>Delivery</h2>
+  <ul>
+    <li>Read the notes once aloud with a timer before recording; cut sentences rather than talking faster.</li>
+    <li>Pause on numbers: "two point eight four milliseconds" is easier to follow than a quick "2.84 ms".</li>
+    <li>Record each segment as its own clip. A mistake then costs one segment, not the whole video.</li>
+    <li>Keep the mouse still and point at the thing you are talking about only when you mention it.</li>
+    <li>In live segments, say what you expect before pressing Enter, then confirm it when the output appears.</li>
+  </ul>
+</div>
+
+<!-- 1 -->
+<article class="card" data-who="a" data-target="40">
+  <div class="card-head"><h2>1 · Introduction</h2><span class="chip">Adrian</span><span class="slot">0:00 · 0:40</span><span class="est"></span></div>
+  <div class="script">
+    <p><span class="cue">SHOW report title</span>Hi, I'm Adrian Maslak, and together with Yassir Omari we present Assignment 2: accelerated AI for vision on the PYNQ-Z2.</p>
+    <p><span class="cue">SHOW system diagram</span>The task is to recognise four shapes, circle, square, triangle and figure-eight, in small grayscale images. We built a convolutional network and a spiking network and put both on the FPGA as Vitis HLS accelerators, fed with images from a PC over UART. In short: the CNN gets 100 percent on the board and the SNN 97.9 percent, but the SNN is fourteen times faster and uses about seventy times less energy per image.</p>
+  </div>
+</article>
+
+<!-- 2 -->
+<article class="card" data-who="a" data-target="50">
+  <div class="card-head"><h2>2 · Dataset</h2><span class="chip">Adrian</span><span class="slot">0:40 · 0:50</span><span class="est"></span></div>
+  <div class="script">
+    <p><span class="cue">SHOW dataset\preview.png</span>We generated our own dataset with a Python script. Every image is 60 by 80 pixels with one shape, and we vary size, position, rotation, line thickness, filled or outlined, background brightness, a lighting gradient, blur and noise. Figure-eights are either two stacked loops or a lemniscate.</p>
+    <p>There are 1500 training, 300 validation and 300 test images per class. Each split comes from its own seeded random stream, so the splits never overlap and the dataset can be regenerated exactly. Both networks are trained and tested on the same images.</p>
+  </div>
+</article>
+
+<!-- 3 -->
+<article class="card" data-who="a" data-target="100">
+  <div class="card-head"><h2>3 · CNN design and HLS</h2><span class="chip">Adrian</span><span class="slot">1:30 · 1:40</span><span class="est"></span></div>
+  <div class="script">
+    <p><span class="cue">SHOW CNN diagram</span>We started with the CNN from the lecture, but on our data it only reached about 32 percent. Its receptive field is about 8 pixels, so it sees short line segments, not whole shapes, and a rotated square is just line segments.</p>
+    <p>So we designed ShapeCNN: four 3-by-3 convolution blocks with 8, 16, 16 and 32 channels, each with batch-norm and ReLU, and max-pooling after the first three, so the image shrinks from 60 by 80 to 7 by 10. Global average pooling and one dense layer give the four outputs. It has only 8.6 thousand parameters, but a receptive field of about 38 pixels, enough to see a whole shape, and it gets 100 percent on the test set.</p>
+    <p><span class="cue">SHOW CNN synthesis report</span>For the hardware we folded batch-norm into the weights and wrote the network in Vitis HLS with 16-bit fixed point. Each layer is one loop pipelined at an initiation interval of one, so every clock cycle computes one 3-by-3 tap for all input channels at once, with the max-pooling inside the same loop. Synthesis gives 283,902 cycles, which is 2.84 milliseconds at 100 megahertz.</p>
+    <p class="hand">Yassir will now show how we checked that the hardware version gives the same answers as Keras.</p>
+  </div>
+</article>
+
+<!-- 4 -->
+<article class="card" data-who="y" data-target="50">
+  <div class="card-head"><h2>4 · CNN C-simulation</h2><span class="chip">Yassir</span><span class="slot">3:10 · 0:50</span><span class="est"></span></div>
+  <div class="script">
+    <p><span class="cue">SHOW shape_cnn_tb.cpp, start/count lines</span>To check the HLS CNN we run C-simulation: the testbench pushes the test images through the fixed-point C++ code and compares each answer with the Keras prediction. Running all 1200 images at once made our PC run out of memory, so I changed the testbench to take a start index and a count, and ran it in three chunks of 400.</p>
+    <p><span class="cue">SHOW hls\cnn\csim_results, three summaries</span>Here are the three summaries: 400 out of 400 in every chunk, so all 1200 test images get the same class as in Keras.</p>
+    <p class="hand">Back to Adrian for the spiking network.</p>
+  </div>
+</article>
+
+<!-- 5 -->
+<article class="card" data-who="a" data-target="110">
+  <div class="card-head"><h2>5 · SNN design, encoding and simulation</h2><span class="chip">Adrian</span><span class="slot">4:00 · 1:50</span><span class="est"></span></div>
+  <div class="script">
+    <p><span class="cue">SHOW SNN diagram</span>The SNN is a leaky integrate-and-fire network with 512 inputs, two hidden layers of 64 and 32 neurons, and 4 outputs. We trained it with snnTorch using one time step, and the class is the output neuron with the highest membrane potential.</p>
+    <p>The key part is turning the image into spikes. The lecture encoding thresholds the edge image at the 90th percentile on a fixed grid, and that gave only 31 percent here: the noise filled up the percentile, and adding Gx and Gy cancels out on 45-degree edges. So we wrote a new encoding. We compute Sobel edges, and a pixel spikes if its edge is stronger than a third of the strongest edge in the image, so it adapts to the contrast. The spike goes into one of two channels, depending on whether the edge is more horizontal or vertical. Then we lay a 16-by-16 grid over the bounding square of all spikes, which removes position and size, and count the spikes per cell, clipped at four. Two channels times 256 cells gives the 512 inputs.</p>
+    <p><span class="cue">SHOW hls\snn\hls_run.log, accuracy line</span>In hardware the weights are 16-bit integers. Because the inputs are spikes, the first layer only adds weights instead of multiplying, and zero inputs are skipped. The C-simulation matches our Python integer model bit for bit on all 1200 images: 97.92 percent.</p>
+  </div>
+</article>
+
+<!-- 6 -->
+<article class="card" data-who="a" data-target="100">
+  <div class="card-head"><h2>6 · CPU vs. FPGA, memory, Vivado</h2><span class="chip">Adrian</span><span class="slot">5:50 · 1:40</span><span class="est"></span></div>
+  <div class="script">
+    <p><span class="cue">SHOW system diagram</span>The FPGA only runs the two networks. Everything else runs on the ARM processor in bare-metal C: it receives the image over UART, checks the CRC, does the preprocessing, starts the accelerator over AXI-Lite, waits for its done flag, reads the result and measures all the times.</p>
+    <p>The networks get their input in different ways. For the CNN, the CPU writes the image into DDR, flushes the data cache so the FPGA sees the new data, and passes the address; the CNN reads it as an AXI master through the high-performance port HP0. For the SNN, the CPU writes the 512 features into an 8-kilobyte block RAM, and the SNN reads them from there.</p>
+    <p><span class="cue">SHOW Vivado block design, then Address Editor</span>This is the block design, with both accelerators in one bitstream. One bug from bring-up: Vivado's automatic wiring left the SNN's memory port on an interconnect that went nowhere, so the SNN just hung. We wired it by hand into the CPU's interconnect, so the CPU and the SNN see the block RAM at the same address. The design meets timing at 100 megahertz and uses 29 percent of the LUTs and 58 percent of the block RAM.</p>
+  </div>
+</article>
+
+<!-- 7 -->
+<article class="card" data-who="a" data-target="40">
+  <div class="card-head"><h2>7 · UART protocol</h2><span class="chip">Adrian</span><span class="slot">7:30 · 0:40</span><span class="est"></span></div>
+  <div class="script">
+    <p><span class="cue">SHOW UART frame diagram</span>The PC and the board talk over the USB UART at 4 megabaud. Every message has two sync bytes, a command, a length, the payload and a CRC-16. The PC sends the raw 4800-byte image, and the board answers with 64 bytes: for each network the class, four scores, the preprocessing time and the accelerator time. An echo command tests the link on its own.</p>
+    <p class="hand">Now Yassir shows it running on the board.</p>
+  </div>
+</article>
+
+<!-- 8 -->
+<article class="card" data-who="y" data-target="140">
+  <div class="card-head"><h2>8 · Live demo, normal design</h2><span class="chip">Yassir</span><span class="slot">8:10 · 2:20</span><span class="est"></span></div>
+  <div class="script">
+    <p><span class="cue">RUN</span><span class="cmdcue">xsdb firmware\run_on_board.tcl</span> This programs the FPGA over JTAG and starts our firmware. <span class="cue">RUN</span><span class="cmdcue">app.py info</span> The board answers, and both networks are present.</p>
+    <p><span class="cue">RUN</span><span class="cmdcue">app.py echo -n 50</span> First the UART on its own, as the assignment asks: fifty images are sent and echoed back, with zero errors and about 43 milliseconds per round trip.</p>
+    <p><span class="cue">RUN</span><span class="cmdcue">app.py demo</span> Now the full pipeline. The PC sends eight test images, the board runs both networks, and each image is shown with its true label and both predictions. <span class="cue">POINT at one image</span> This one is a circle; the CNN says circle, the SNN says circle, and the CNN took about 2840 microseconds against 197 for the SNN.</p>
+    <p><span class="cue">RUN</span><span class="cmdcue">app.py demo --image …</span> These are four test images the SNN gets wrong: two circles and two squares. The CNN gets all four right; the SNN calls them figure-eight or triangle. These are the cases where our hand-made spike encoding loses information.</p>
+    <p><span class="cue">RUN</span><span class="cmdcue">app.py eval -n 200</span> Finally, 200 random test images: accuracy per network, the preprocessing and accelerator times, and the UART time measured on its own.</p>
+  </div>
+</article>
+
+<!-- 9 -->
+<article class="card" data-who="y" data-target="110">
+  <div class="card-head"><h2>9 · DFX: swapping the networks</h2><span class="chip">Yassir</span><span class="slot">10:30 · 1:50</span><span class="est"></span></div>
+  <div class="script">
+    <p><span class="cue">SHOW pblock or dfx\README.md</span>For the bonus we used Dynamic Function eXchange. We only need one network at a time, so instead of keeping both in the FPGA, they share one region, the lower two thirds of the chip, sized for the CNN, and we swap them while the board runs. To fit the same slot, both need exactly the same ports, so I wrapped each one: same registers, same memory port, and the SNN now reads its features from DDR like the CNN. Each wrapper also reports an id, so the firmware knows which network is loaded.</p>
+    <p><span class="cue">RUN</span><span class="cmdcue">run_on_board.tcl cnn</span>, <span class="cmdcue">info</span>, <span class="cmdcue">eval --net cnn -n 50</span> We start with the CNN: info says CNN yes, SNN no, and it classifies as before.</p>
+    <p><span class="cue">RUN</span><span class="cmdcue">swap.tcl snn</span>, <span class="cmdcue">reset_pl.tcl</span> Now we load the SNN's partial bitstream over JTAG. It takes about two and a half seconds, and the processor keeps running. Then we reset the FPGA logic: on our first try the AXI bus locked up after a swap, because the region's outputs toggle while it's rewritten.</p>
+    <p><span class="cue">RUN</span><span class="cmdcue">info</span>, <span class="cmdcue">eval --net snn -n 50</span> Now info says SNN only, and the SNN gives the same results as in the normal design.</p>
+    <p class="hand">Back to Adrian for the comparison.</p>
+  </div>
+</article>
+
+<!-- 10 -->
+<article class="card" data-who="a" data-target="90">
+  <div class="card-head"><h2>10 · Results and comparison</h2><span class="chip">Adrian</span><span class="slot">12:20 · 1:30</span><span class="est"></span></div>
+  <div class="script">
+    <p><span class="cue">SHOW report Table 1</span>On the same 1200 test images, the CNN gets 100 percent and the SNN 97.9, losing two to three percent in every class. But the SNN accelerator takes 197 microseconds against 2.84 milliseconds for the CNN, fourteen times faster, and with about 11 microjoules per inference against 755 it uses around seventy times less energy. The CNN also needs 2.7 times the LUTs and 6.6 times the DSPs.</p>
+    <p><span class="cue">SHOW timing bar</span>End to end, the picture changes. Just receiving one image over UART takes 12 milliseconds, more than all preprocessing and inference together, which is 5.2. A full round trip is 30.7 milliseconds, about 31 images per second. And the SNN's spike encoding takes 1.8 milliseconds on the CPU, nine times the SNN itself, so end to end the SNN is only one and a half times faster. With DFX, both networks kept the same accuracy and speed.</p>
+    <p class="hand">Yassir will finish with the limitations.</p>
+  </div>
+</article>
+
+<!-- 11 -->
+<article class="card" data-who="y" data-target="60">
+  <div class="card-head"><h2>11 · Limitations and trade-offs</h2><span class="chip">Yassir</span><span class="slot">13:50 · 1:00</span><span class="est"></span></div>
+  <div class="script">
+    <p><span class="cue">SHOW report discussion or closing slide</span>A few limitations and next steps. The SNN's encoder runs on the CPU and dominates its time; moving it into the FPGA would make the SNN's speed advantage real end to end. The UART is the bottleneck: Ethernet, or sending only the 1-kilobyte spike features instead of the 4.8-kilobyte image, would help, and DMA with double buffering could overlap receiving one image with processing the last. For DFX, a proper decoupler should replace the reset after each swap, and the processor could load the partial bitstream itself instead of JTAG. Finally, more SNN time steps could trade some speed for accuracy. Thanks for watching.</p>
+  </div>
+</article>
+</div>
+
+<script>
+(function(){
+  var WPM = 140;
+  function fmt(s){ s = Math.round(s); return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0'); }
+  function spoken(card){
+    var clone = card.querySelector('.script').cloneNode(true);
+    clone.querySelectorAll('.cue,.cmdcue').forEach(function(n){ n.remove(); });
+    return clone.textContent.trim().split(/\s+/).filter(Boolean).length;
+  }
+  var tot = {a:0, y:0};
+  document.querySelectorAll('.card').forEach(function(card){
+    var w = spoken(card), secs = w / WPM * 60, target = +card.dataset.target;
+    var est = card.querySelector('.est');
+    est.textContent = w + ' words · ~' + fmt(secs);
+    if (secs > target * 1.1 && card.querySelector('.cmdcue') === null) est.classList.add('over');
+    tot[card.dataset.who] += secs;
+  });
+  var totals = document.getElementById('totals');
+  function showTotals(){ totals.textContent = 'spoken: Adrian ~' + fmt(tot.a) + ' · Yassir ~' + fmt(tot.y); }
+  showTotals();
+  var btns = document.querySelectorAll('.filters button');
+  function apply(f){
+    btns.forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.f === f ? 'true' : 'false'); });
+    document.querySelectorAll('.card').forEach(function(c){ c.hidden = !(f === 'all' || c.dataset.who === f); });
+    try { localStorage.setItem('sn-filter', f); } catch(e){}
+  }
+  btns.forEach(function(b){ b.addEventListener('click', function(){ apply(b.dataset.f); }); });
+  var saved = 'all';
+  try { saved = localStorage.getItem('sn-filter') || 'all'; } catch(e){}
+  apply(saved);
+})();
+</script>

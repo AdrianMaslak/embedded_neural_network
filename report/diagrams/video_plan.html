@@ -59,6 +59,9 @@ li{max-width:70ch}
 .label{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
 .say{border-left:3px solid var(--line);padding-left:12px}
 .handover{font-size:13.5px;color:var(--muted);font-style:italic}
+.open{background:var(--code-bg);border:1px dashed var(--line);border-radius:5px;padding:10px 12px}
+.open ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:3px;font-size:14px}
+.open li{max-width:none}
 
 .cmd{position:relative;background:var(--code-bg);border:1px solid var(--line);border-radius:5px;padding:10px 70px 10px 12px;overflow-x:auto}
 .cmd pre{margin:0;font-family:var(--font-mono);font-size:13px;line-height:1.6;white-space:pre}
@@ -139,6 +142,10 @@ li{max-width:70ch}
     <div class="time"><b>0:00</b><span>0:40</span><i class="tag">Adrian</i></div>
     <div class="body">
       <h3>1 · Introduction</h3>
+      <div class="open"><div class="label">Have open, in this order</div><ol>
+        <li><code>report\report.pdf</code>, page 1 (title, authors, video link).</li>
+        <li>Diagrams page, tab <b>System</b>.</li>
+      </ol></div>
       <div class="cols">
         <div><div class="label">On screen</div><p>Report title, then the system diagram.</p></div>
         <div class="say"><div class="label">Say</div><ul>
@@ -154,6 +161,10 @@ li{max-width:70ch}
     <div class="time"><b>0:40</b><span>0:50</span><i class="tag">Adrian</i></div>
     <div class="body">
       <h3>2 · Dataset</h3>
+      <div class="open"><div class="label">Have open</div><ol>
+        <li><code>dataset\preview.png</code>, full screen.</li>
+        <li>Optional: <code>dataset\gen_shapes.py</code> in VS Code, to show the random parameters.</li>
+      </ol></div>
       <div class="cols">
         <div><div class="label">On screen</div><p><code>dataset\preview.png</code>.</p></div>
         <div class="say"><div class="label">Say</div><ul>
@@ -168,6 +179,10 @@ li{max-width:70ch}
     <div class="time"><b>1:30</b><span>1:40</span><i class="tag">Adrian</i></div>
     <div class="body">
       <h3>3 · CNN design and HLS</h3>
+      <div class="open"><div class="label">Have open, in this order</div><ol>
+        <li>Diagrams page, tab <b>CNN</b>.</li>
+        <li>VS Code: <code>hls\cnn\cnn_prj\sol1\syn\report\shape_cnn_csynth.rpt</code> line 29 (latency 283 902 cycles), then line 55 (Utilization Estimates).</li>
+      </ol></div>
       <div class="cols">
         <div><div class="label">On screen</div><p>CNN diagram, then the CNN synthesis report (283 902 cycles, resource table).</p></div>
         <div class="say"><div class="label">Say</div><ul>
@@ -184,6 +199,10 @@ li{max-width:70ch}
     <div class="time"><b>3:10</b><span>0:50</span><i class="tag">Yassir</i></div>
     <div class="body">
       <h3>4 · CNN C-simulation</h3>
+      <div class="open"><div class="label">Have open, in this order</div><ol>
+        <li>Explorer or VS Code: <code>hls\cnn\csim_results\</code> with <code>csim_cnn_summary_0_400.txt</code>, <code>_400_800.txt</code>, <code>_800_1200.txt</code>.</li>
+        <li>VS Code: <code>hls\cnn\shape_cnn_tb.cpp</code> line 12 (HLS_CSIM_START / COUNT).</li>
+      </ol></div>
       <div class="cols">
         <div><div class="label">On screen</div><p><code>hls\cnn\csim_results\</code>: the three summary files, then the start/count lines in <code>shape_cnn_tb.cpp</code>.</p></div>
         <div class="say"><div class="label">Say</div><ul>
@@ -200,6 +219,10 @@ li{max-width:70ch}
     <div class="time"><b>4:00</b><span>1:50</span><i class="tag">Adrian</i></div>
     <div class="body">
       <h3>5 · SNN design, encoding and simulation</h3>
+      <div class="open"><div class="label">Have open, in this order</div><ol>
+        <li>Diagrams page, tab <b>SNN</b> (encoding + 512-64-32-4).</li>
+        <li>VS Code: <code>hls\snn\hls_run.log</code> line 99 ("HLS SNN accuracy: 0.9792 (1175/1200)").</li>
+      </ol></div>
       <div class="cols">
         <div><div class="label">On screen</div><p>SNN diagram, then <code>hls\snn\hls_run.log</code> (accuracy line, 1175/1200).</p></div>
         <div class="say"><div class="label">Say</div><ul>
@@ -216,6 +239,12 @@ li{max-width:70ch}
     <div class="time"><b>5:50</b><span>1:40</span><i class="tag">Adrian</i></div>
     <div class="body">
       <h3>6 · CPU vs. FPGA, memory, Vivado</h3>
+      <div class="open"><div class="label">Have open, in this order</div><ol>
+        <li>Diagrams page, tab <b>System</b>.</li>
+        <li>Vivado <code>vivado\build\a2.xpr</code>: Open Block Design (diagram), then the <b>Address Editor</b> tab (0x4000_0000 / 0x4001_0000 / 0x4002_0000).</li>
+        <li>VS Code: <code>firmware\main.c</code> line 180 (<code>run_cnn</code>), scroll down to <code>run_snn</code>.</li>
+        <li>Optional: <code>vivado\out\utilization.rpt</code> or report Table 1 for 29 % LUT / 58 % BRAM.</li>
+      </ol></div>
       <div class="cols">
         <div><div class="label">On screen</div><p>System diagram, Vivado block design and Address Editor, briefly <code>main.c</code>.</p></div>
         <div class="say"><div class="label">Say</div><ul>
@@ -232,6 +261,10 @@ li{max-width:70ch}
     <div class="time"><b>7:30</b><span>0:40</span><i class="tag">Adrian</i></div>
     <div class="body">
       <h3>7 · UART protocol</h3>
+      <div class="open"><div class="label">Have open</div><ol>
+        <li>Diagrams page, tab <b>UART</b> (frame layout).</li>
+        <li>Optional: <code>firmware\protocol.h</code> for the command codes.</li>
+      </ol></div>
       <div class="cols">
         <div><div class="label">On screen</div><p>UART frame diagram.</p></div>
         <div class="say"><div class="label">Say</div><ul>
@@ -247,6 +280,11 @@ li{max-width:70ch}
     <div class="time"><b>8:10</b><span>2:20</span><i class="tag">Yassir</i><i class="live">live</i></div>
     <div class="body">
       <h3>8 · Live demo, normal design</h3>
+      <div class="open"><div class="label">Have open (Yassir's PC)</div><ol>
+        <li>Board on, JTAG jumper set, USB in; COM port checked in Device Manager.</li>
+        <li>Terminal at repo root, large font, these commands ready to paste.</li>
+        <li>Room on screen for the demo window that <code>app.py demo</code> opens.</li>
+      </ol></div>
       <p>Run in order and narrate as each finishes. Replace <code>COM4</code> with your port.</p>
       <div class="label">a · Program the board</div>
       <div class="cmd"><button class="copy" type="button">Copy</button><pre>xsdb firmware\run_on_board.tcl
@@ -269,6 +307,12 @@ python pc\app.py --port COM4 info</pre></div>
     <div class="time"><b>10:30</b><span>1:50</span><i class="tag">Yassir</i><i class="live">live</i></div>
     <div class="body">
       <h3>9 · DFX: swapping the networks</h3>
+      <div class="open"><div class="label">Have open (Yassir's PC), in this order</div><ol>
+        <li>Vivado DFX project (<code>dfx\vivado\build</code>): implemented design, Device view with the RP pblock highlighted.</li>
+        <li><code>dfx\README.md</code> (rendered on GitHub or VS Code preview), results table.</li>
+        <li>Same terminal as segment 8.</li>
+        <li>Optional: <code>dfx\results\board_test.log</code> as a backup if the live swap fails.</li>
+      </ol></div>
       <div class="cols">
         <div><div class="label">On screen</div><p>Terminal; briefly the floorplan or pblock in Vivado and <code>dfx\README.md</code> results table.</p></div>
         <div class="say"><div class="label">Say</div><ul>
@@ -294,6 +338,12 @@ python pc\app.py --port COM4 eval --net snn -n 50</pre></div>
     <div class="time"><b>12:20</b><span>1:30</span><i class="tag">Adrian</i></div>
     <div class="body">
       <h3>10 · Results and comparison</h3>
+      <div class="open"><div class="label">Have open, in this order</div><ol>
+        <li><code>report\report.pdf</code> at Table 1 (results table).</li>
+        <li><code>pc\results\both_20261116_193730\cm_CNN.png</code> and <code>cm_SNN.png</code> (confusion matrices, for "SNN loses 2–3 % per class").</li>
+        <li>Diagrams page, tab <b>Timing</b> (UART vs compute bar).</li>
+        <li>Report Table 2 (DFX) for the last point.</li>
+      </ol></div>
       <div class="cols">
         <div><div class="label">On screen</div><p>Report Table 1, then the timing bar from the diagrams page.</p></div>
         <div class="say"><div class="label">Say</div><ul>
@@ -311,6 +361,10 @@ python pc\app.py --port COM4 eval --net snn -n 50</pre></div>
     <div class="time"><b>13:50</b><span>1:00</span><i class="tag">Yassir</i></div>
     <div class="body">
       <h3>11 · Limitations and trade-offs</h3>
+      <div class="open"><div class="label">Have open</div><ol>
+        <li><code>report\report.pdf</code> at the Discussion section (or a closing slide).</li>
+        <li>Last frame: repo page <code>github.com/AdrianMaslak/embedded_neural_network</code>.</li>
+      </ol></div>
       <div class="cols">
         <div><div class="label">On screen</div><p>Report discussion paragraph, or one closing slide.</p></div>
         <div class="say"><div class="label">Say</div><ul>
