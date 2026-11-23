@@ -62,5 +62,6 @@ dfx/*.txt
 dfx/**/*.log
 !dfx/results/*.log
 
-# ---- video material, kept locally only ----
-report/diagrams/
+# ---- video planning notes, kept locally only ----
+report/diagrams/speaker_notes.html
+report/diagrams/video_plan.html

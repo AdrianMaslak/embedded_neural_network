@@ -55,7 +55,7 @@ with relative paths, so keep the folders where they are.
 | [`common.py`](common.py) | Class list and the reference preprocessing for both networks |
 | [`cnn/`](cnn/), [`snn/`](snn/) | Training and export scripts, trained models, plots |
 | [`tools/`](tools/) | Check that the firmware preprocessing equals the Python reference |
-| [`report/`](report/) | Report (LaTeX + PDF) |
+| [`report/`](report/) | Report (LaTeX + PDF) and diagrams |
 
 ## Requirements
 

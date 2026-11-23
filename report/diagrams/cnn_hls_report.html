@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CNN HLS Report</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@600&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--bg:#f5f7f8;--surface:#fff;--fg:#17202a;--muted:#5a6672;--line:#c9d1d8;--track:#e6ebef;
+  --c1:#1f5fbf;--c2:#a3530c;--hot:#b4331f;
+  --head:"IBM Plex Sans Condensed","Arial Narrow",Arial,sans-serif;--body:"IBM Plex Sans",system-ui,sans-serif;--mono:"IBM Plex Mono",Consolas,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1418;--surface:#171e24;--fg:#e4e9ee;--muted:#97a3ae;--line:#2e3a44;--track:#222c34;--c1:#6fa3f0;--c2:#f0a14f;--hot:#f08a74;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1418;--surface:#171e24;--fg:#e4e9ee;--muted:#97a3ae;--line:#2e3a44;--track:#222c34;--c1:#6fa3f0;--c2:#f0a14f;--hot:#f08a74;color-scheme:dark}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.5;padding:32px 16px 48px}
+.wrap{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+.eyebrow{font-family:var(--mono);font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--head);font-size:clamp(28px,4vw,40px);margin:4px 0 0;line-height:1.1}
+h2{font-family:var(--head);font-size:24px;margin:0 0 12px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px 16px}
+.kpi b{display:block;font-family:var(--mono);font-weight:500;font-size:28px;font-variant-numeric:tabular-nums}
+.kpi span{color:var(--muted);font-size:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:18px 20px}
+.row{display:grid;grid-template-columns:260px 1fr 150px;gap:14px;align-items:center;padding:5px 0}
+.row .name{font-size:15px}.row .name small{display:block;color:var(--muted);font-family:var(--mono);font-size:12px}
+.track{height:22px;background:var(--track);border-radius:3px;overflow:hidden}
+.fill{height:100%;background:var(--c1)}
+.fill.hot{background:var(--hot)}
+.val{font-family:var(--mono);font-size:14px;text-align:right;font-variant-numeric:tabular-nums}
+.res{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.res .lbl{display:flex;justify-content:space-between;font-family:var(--mono);font-size:14px;margin-bottom:6px}
+.res .track{height:26px}
+.note{color:var(--muted);font-size:14px;max-width:80ch;margin:10px 0 0}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{padding:6px 10px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+th:first-child,td:first-child{text-align:left}
+th{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:500}
+tfoot td{font-weight:500}
+.scroll{overflow-x:auto}
+@media (max-width:700px){.row{grid-template-columns:1fr;gap:4px}.val{text-align:left}}
+</style></head><body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Vitis HLS C synthesis · shape_cnn · xc7z020 · target 100 MHz</div>
+  <h1>CNN accelerator: HLS synthesis report</h1>
+</header>
+
+<div class="kpis">
+  <div class="kpi"><b>283 902</b><span>cycles per image</span></div>
+  <div class="kpi"><b>2.84 ms</b><span>latency at 100 MHz</span></div>
+  <div class="kpi"><b>7.40 ns</b><span>estimated clock (10 ns target, met)</span></div>
+  <div class="kpi"><b>Q8.8</b><span>16-bit fixed point, II = 1 loops</span></div>
+</div>
+
+<section class="card">
+  <h2>Where the cycles go</h2>
+  <div class="row"><div class="name">Load image (DDR, m_axi)<small>4800 pixels</small></div><div class="track"><div class="fill" style="width:2.8%"></div></div><div class="val">4 802 · 1.7 %</div></div>
+  <div class="row"><div class="name">Block 1: conv 1→8, pool<small>60×80</small></div><div class="track"><div class="fill" style="width:25.0%"></div></div><div class="val">43 244 · 15.2 %</div></div>
+  <div class="row"><div class="name">Block 2: conv 8→16, pool<small>30×40</small></div><div class="track"><div class="fill hot" style="width:100%"></div></div><div class="val">172 851 · 60.9 %</div></div>
+  <div class="row"><div class="name">Block 3: conv 16→16, pool<small>15×20</small></div><div class="track"><div class="fill" style="width:23.4%"></div></div><div class="val">40 379 · 14.2 %</div></div>
+  <div class="row"><div class="name">Block 4: conv 16→32<small>7×10</small></div><div class="track"><div class="fill" style="width:11.7%"></div></div><div class="val">20 219 · 7.1 %</div></div>
+  <div class="row"><div class="name">Classify: global pool + dense<small>32→4</small></div><div class="track"><div class="fill" style="width:1.4%"></div></div><div class="val">2 387 · 0.8 %</div></div>
+  <p class="note">Block 2 dominates: 30×40 pixels × 16 output channels × 9 taps = 172 800 cycles, one tap per cycle (all 8 input channels in parallel). Unrolling over taps or output channels would cut this, at the cost of more DSPs.</p>
+</section>
+
+<section class="card">
+  <h2>Resources (HLS estimate, whole IP)</h2>
+  <div class="res">
+    <div><div class="lbl"><span>LUT</span><span>23 188 / 53 200 · 43 %</span></div><div class="track"><div class="fill" style="width:43%"></div></div></div>
+    <div><div class="lbl"><span>FF</span><span>20 550 / 106 400 · 19 %</span></div><div class="track"><div class="fill" style="width:19%"></div></div></div>
+    <div><div class="lbl"><span>BRAM 18K</span><span>137 / 280 · 48 %</span></div><div class="track"><div class="fill" style="width:48%"></div></div></div>
+    <div><div class="lbl"><span>DSP</span><span>53 / 220 · 24 %</span></div><div class="track"><div class="fill" style="width:24%"></div></div></div>
+  </div>
+  <p class="note">88 of the 137 BRAMs hold the weights and the 4800-pixel image buffer. These are pre-Vivado estimates; after place and route the CNN uses about 9.8 k LUT (see <code>vivado/out/utilization.rpt</code>).</p>
+</section>
+
+<section class="card">
+  <h2>Per module</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Module</th><th>Cycles</th><th>BRAM 18K</th><th>DSP</th><th>FF</th><th>LUT</th></tr></thead>
+    <tbody>
+      <tr><td>Load image</td><td>4 802</td><td>0</td><td>0</td><td>47</td><td>68</td></tr>
+      <tr><td>Block 1</td><td>43 244</td><td>0</td><td>8</td><td>4 001</td><td>4 729</td></tr>
+      <tr><td>Block 2</td><td>172 851</td><td>8</td><td>8</td><td>4 542</td><td>3 974</td></tr>
+      <tr><td>Block 3</td><td>40 379</td><td>16</td><td>16</td><td>4 609</td><td>4 122</td></tr>
+      <tr><td>Block 4</td><td>20 219</td><td>16</td><td>16</td><td>4 060</td><td>3 685</td></tr>
+      <tr><td>Classify</td><td>2 387</td><td>1</td><td>1</td><td>2 040</td><td>2 544</td></tr>
+      <tr><td>AXI-Lite + m_axi interfaces</td><td>–</td><td>8</td><td>0</td><td>988</td><td>1 063</td></tr>
+      <tr><td>Weight + image memories</td><td>–</td><td>88</td><td>–</td><td>–</td><td>–</td></tr>
+    </tbody>
+    <tfoot><tr><td>Total</td><td>283 902</td><td>137</td><td>53</td><td>20 550</td><td>23 188</td></tr></tfoot>
+  </table></div>
+  <p class="note">Source: <code>hls/cnn/cnn_prj/sol1/syn/report/shape_cnn_csynth.rpt</code>. Totals include multiplexers, registers and one 32×34 multiplier not listed separately.</p>
+</section>
+</div>
+</body></html>
